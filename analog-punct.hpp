@@ -334,54 +334,59 @@ int main ()
     (rectangle<4,1>)(o-~~~o |! o---~o);   (rectangle<4,2>)(o-~~~o |!!! o---~o);
     (rectangle<4,1>)(o-~~~o |! o-~~~o);   (rectangle<4,2>)(o-~~~o |!!! o-~~~o);
 
+  (rectangle<5,0>)(*-----**-----o);
+  (rectangle<5,0>)(*-----*o-----o);
+    (rectangle<5,0>)(*-----*o---~~o);
+    (rectangle<5,0>)(*-----*o-~~~~o);
+  (rectangle<5,0>)(*-----o*-----o);
+  (rectangle<5,0>)(o-----**-----o);
+    (rectangle<5,0>)(o---~~**-----o);
+    (rectangle<5,0>)(o-~~~~**-----o);
+  (rectangle<5,0>)(o-----*o-----o);
+    (rectangle<5,0>)(o-----*o---~~o);
+    (rectangle<5,0>)(o-----*o-~~~~o);
+    (rectangle<5,0>)(o---~~*o-----o);
+    (rectangle<5,0>)(o---~~*o---~~o);
+    (rectangle<5,0>)(o---~~*o-~~~~o);
+    (rectangle<5,0>)(o-~~~~*o-----o);
+    (rectangle<5,0>)(o-~~~~*o---~~o);
+    (rectangle<5,0>)(o-~~~~*o-~~~~o);
+  (rectangle<5,0>)(o-----o*-----o);
+    (rectangle<5,0>)(o---~~o*-----o);
+    (rectangle<5,0>)(o-~~~~o*-----o);
 
-  rectangle<5, 3>(*-----*
-                  !     !
-                  !     !
-                  !     !
-                  *-----o);
-
-  rectangle<5, 3>(*-----*
-                  !     !
-                  !     !
-                  !     !
-                  o-----o);
-
-  rectangle<5, 3>(*-----o
-                  |     !
-                  !     !
-                  !     !
-                  *-----o);
-
-  rectangle<5, 3>(*-----o
-                  |     !
-                  !     !
-                  !     !
-                  o-----o);
-
-  rectangle<5, 3>(o-----*
-                  !     !
-                  !     !
-                  !     !
-                  *-----o);
-
-  rectangle<5, 3>(o-----*
-                  !     !
-                  !     !
-                  !     !
-                  o-----o);
-
-  rectangle<5, 3>(o-----o
-                  |     !
-                  !     !
-                  !     !
-                  *-----o);
-
-  rectangle<5, 3>(o-----o
-                  |     !
-                  !     !
-                  !     !
-                  o-----o);
+  (rectangle<5,1>)(*-----* !! *-----o);     (rectangle<5,2>)(*-----* !!!! *-----o);
+  (rectangle<5,1>)(*-----* !! o-----o);     (rectangle<5,2>)(*-----* !!!! o-----o);
+    (rectangle<5,1>)(*-----* !! o---~~o);     (rectangle<5,2>)(*-----* !!!! o---~~o);
+    (rectangle<5,1>)(*-----* !! o-~~~~o);     (rectangle<5,2>)(*-----* !!!! o-~~~~o);
+  (rectangle<5,1>)(*-----o |! *-----o);     (rectangle<5,2>)(*-----o |!!! *-----o);
+  (rectangle<5,1>)(*-----o |! o-----o);     (rectangle<5,2>)(*-----o |!!! o-----o);
+    (rectangle<5,1>)(*-----o |! o---~~o);     (rectangle<5,2>)(*-----o |!!! o---~~o);
+    (rectangle<5,1>)(*-----o |! o-~~~~o);     (rectangle<5,2>)(*-----o |!!! o-~~~~o);
+  (rectangle<5,1>)(o-----* !! *-----o);     (rectangle<5,2>)(o-----* !!!! *-----o);
+    (rectangle<5,1>)(o---~~* !! *-----o);     (rectangle<5,2>)(o---~~* !!!! *-----o);
+    (rectangle<5,1>)(o-~~~~* !! *-----o);     (rectangle<5,2>)(o-~~~~* !!!! *-----o);
+  (rectangle<5,1>)(o-----* !! o-----o);     (rectangle<5,2>)(o-----* !!!! o-----o);
+    (rectangle<5,1>)(o-----* !! o---~~o);     (rectangle<5,2>)(o-----* !!!! o---~~o);
+    (rectangle<5,1>)(o-----* !! o-~~~~o);     (rectangle<5,2>)(o-----* !!!! o-~~~~o);
+    (rectangle<5,1>)(o---~~* !! o-----o);     (rectangle<5,2>)(o---~~* !!!! o-----o);
+    (rectangle<5,1>)(o---~~* !! o---~~o);     (rectangle<5,2>)(o---~~* !!!! o---~~o);
+    (rectangle<5,1>)(o---~~* !! o-~~~~o);     (rectangle<5,2>)(o---~~* !!!! o-~~~~o);
+    (rectangle<5,1>)(o-~~~~* !! o-----o);     (rectangle<5,2>)(o-~~~~* !!!! o-----o);
+    (rectangle<5,1>)(o-~~~~* !! o---~~o);     (rectangle<5,2>)(o-~~~~* !!!! o---~~o);
+    (rectangle<5,1>)(o-~~~~* !! o-~~~~o);     (rectangle<5,2>)(o-~~~~* !!!! o-~~~~o);
+  (rectangle<5,1>)(o-----o |! *-----o);     (rectangle<5,2>)(o-----o |!!! *-----o);
+    (rectangle<5,1>)(o---~~o |! *-----o);     (rectangle<5,2>)(o---~~o |!!! *-----o);
+    (rectangle<5,1>)(o-~~~~o |! *-----o);     (rectangle<5,2>)(o-~~~~o |!!! *-----o);
+  (rectangle<5,1>)(o-----o |! o-----o);     (rectangle<5,2>)(o-----o |!!! o-----o);
+    (rectangle<5,1>)(o-----o |! o---~~o);     (rectangle<5,2>)(o-----o |!!! o---~~o);
+    (rectangle<5,1>)(o-----o |! o-~~~~o);     (rectangle<5,2>)(o-----o |!!! o-~~~~o);
+    (rectangle<5,1>)(o---~~o |! o-----o);     (rectangle<5,2>)(o---~~o |!!! o-----o);
+    (rectangle<5,1>)(o---~~o |! o---~~o);     (rectangle<5,2>)(o---~~o |!!! o---~~o);
+    (rectangle<5,1>)(o---~~o |! o-~~~~o);     (rectangle<5,2>)(o---~~o |!!! o-~~~~o);
+    (rectangle<5,1>)(o-~~~~o |! o-----o);     (rectangle<5,2>)(o-~~~~o |!!! o-----o);
+    (rectangle<5,1>)(o-~~~~o |! o---~~o);     (rectangle<5,2>)(o-~~~~o |!!! o---~~o);
+    (rectangle<5,1>)(o-~~~~o |! o-~~~~o);     (rectangle<5,2>)(o-~~~~o |!!! o-~~~~o);
 }
 
 #endif // testing
