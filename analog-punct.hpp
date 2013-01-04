@@ -94,17 +94,17 @@ namespace analog_literals {
   template <int n> bangs<1, odashes<n> > operator! (odashes<n>) { return gen(); }
   template <typename T, int n> bangs<n+1, T> operator! (bangs<n,T>) { return gen(); }
 
-  template <int s2, int b> bangs<s2, line<b+1> > operator- (bangs<s2, odashes<b> >, osym) { return gen(); }
-  template <int s2, int p, int q> bangs<s2, line<p+q+1> > operator- (bangs<s2, odashes<p> >, dashes<q, osym>) { return gen(); }
-  template <int s2> bangs<s2, line<1> > operator- (bangs<s2, osym>, osym) { return gen(); }
-  template <int s2, int q> bangs<s2, line<q+1> > operator- (bangs<s2, osym>, dashes<q, osym>) { return gen(); }
+  template <int s, int b> bangs<s, line<b+1> > operator- (bangs<s, odashes<b> >, osym) { return gen(); }
+  template <int s, int p, int q> bangs<s, line<p+q+1> > operator- (bangs<s, odashes<p> >, dashes<q, osym>) { return gen(); }
+  template <int s> bangs<s, line<1> > operator- (bangs<s, osym>, osym) { return gen(); }
+  template <int s, int q> bangs<s, line<q+1> > operator- (bangs<s, osym>, dashes<q, osym>) { return gen(); }
 
   // osidesobottomo represents *!!!!*--o
   template <int s, int b> struct osidesobottomo {};
   template <int b> osidesobottomo<0,b> operator* (line<b>) { return gen(); }
   template <int b> osidesobottomo<0,b> operator* (osym, dashes<b, osym>) { return gen(); }
-  template <int s2, int b> osidesobottomo<s2/2, b> operator* (bangs<s2, line<b> >)
-  { analog_literals_assert(s2 % 2 == 0); return gen(); }
+  template <int s, int b> osidesobottomo<s,b> operator* (bangs<s, line<b> >)
+  { analog_literals_assert(s % 2 == 0); return gen(); }
 
   template <int s, int b> dashes<1, osidesobottomo<s,b> > operator~ (osidesobottomo<s,b>) { return gen(); }
   template <int s, int b> dashes<1, osidesobottomo<s,b> > operator- (osidesobottomo<s,b>) { return gen(); }
@@ -115,14 +115,14 @@ namespace analog_literals {
   // osidesobottom represents *!!!!o--
   template <int s, int b> struct osidesobottom {};
   template <int b> osidesobottom<0,b> operator* (odashes<b>) { return gen(); }
-  template <int s2, int b> osidesobottom<s2/2, b> operator* (bangs<s2, odashes<b> >)
-  { analog_literals_assert(s2 % 2 == 0); return gen(); }
-  template <int s2> osidesobottom<s2/2, 0> operator* (bangs<s2, osym >)
-  { analog_literals_assert(s2 % 2 == 0); return gen(); }
-  template <int s2, int b> osidesobottom<(s2+1)/2, b> operator| (osym, bangs<s2, odashes<b> >)
-  { analog_literals_assert(s2 % 2 == 1); return gen(); }
-  template <int t, int s2, int b> dashes<t, osidesobottom<(s2+1)/2, b> > operator| (dashes<t, osym>, bangs<s2, odashes<b> >)
-  { analog_literals_assert(s2 % 2 == 1); return gen(); }
+  template <int s, int b> osidesobottom<s,b> operator* (bangs<s, odashes<b> >)
+  { analog_literals_assert(s % 2 == 0); return gen(); }
+  template <int s> osidesobottom<s, 0> operator* (bangs<s, osym >)
+  { analog_literals_assert(s % 2 == 0); return gen(); }
+  template <int s, int b> osidesobottom<s+1, b> operator| (osym, bangs<s, odashes<b> >)
+  { analog_literals_assert(s % 2 == 1); return gen(); }
+  template <int t, int s, int b> dashes<t, osidesobottom<s+1, b> > operator| (dashes<t, osym>, bangs<s, odashes<b> >)
+  { analog_literals_assert(s % 2 == 1); return gen(); }
 
   dashes<1, osidesobottom<0,0> > operator~ (line<0>) { return gen(); }
   dashes<1, osidesobottom<0,0> > operator- (line<0>) { return gen(); }
@@ -136,12 +136,12 @@ namespace analog_literals {
   template <int t, int s, int b> struct otoposidesobottom {};
   template <int t> otoposidesobottom<t,0,0> operator* (odashes<t>, osym) { return gen(); }
   template <int t, int b> otoposidesobottom<t,0,b> operator* (odashes<t>, odashes<b>) { return gen(); }
-  template <int t, int s2, int b> otoposidesobottom<t, s2/2, b> operator* (odashes<t>, bangs<s2, odashes<b> >)
-  { analog_literals_assert(s2 % 2 == 0); analog_literals_assert(t > b); return gen(); }
+  template <int t, int s, int b> otoposidesobottom<t, s, b> operator* (odashes<t>, bangs<s, odashes<b> >)
+  { analog_literals_assert(s % 2 == 0); analog_literals_assert(t > b); return gen(); }
   template <int t, int s, int b> otoposidesobottom<t,s,b> operator* (dashes<t, osidesobottom<s,b> >)
   { analog_literals_assert(t > b); return gen(); }
-  template <int t, int s2> otoposidesobottom<t, s2/2, 0> operator* (odashes<t>, bangs<s2, osym>)
-  { analog_literals_assert(s2 % 2 == 0); return gen(); }
+  template <int t, int s> otoposidesobottom<t, s, 0> operator* (odashes<t>, bangs<s, osym>)
+  { analog_literals_assert(s % 2 == 0); return gen(); }
   template <int n, int s, int b> otoposidesobottom<n+1,s,b> operator- (odashes<n>, osidesobottom<s,b>)
   { analog_literals_assert(n+1 > b); return gen(); }
   template <int p, int q, int s, int b> otoposidesobottom<p+q+1,s,b> operator- (odashes<p>, dashes<q, osidesobottom<s,b> >)
@@ -154,28 +154,30 @@ namespace analog_literals {
   otoposidesobottom<1,0,0> operator- (osym, line<0>) { return gen(); }
 
   // Constructing a complete rectangle: * (--*!!!!*--o)
-  template <int s> rectangle<0,s> operator* (osidesobottomo<s,0>) { return gen(); }
-  template <int t, int s, int b> rectangle<t,s> operator* (dashes<t, osidesobottomo<s,b> >)
-  { analog_literals_assert(t == b); return gen(); }
+  template <int s> rectangle<0,s/2> operator* (osidesobottomo<s,0>)
+  { analog_literals_assert(s % 2 == 0); return gen(); }
+  template <int t, int s, int b> rectangle<t,s/2> operator* (dashes<t, osidesobottomo<s,b> >)
+  { analog_literals_assert(t == b); analog_literals_assert(s % 2 == 0); return gen(); }
 
   // Constructing a complete rectangle: (o--) - (--*!!!!*-----o)
-  template <int s> rectangle<1,s> operator- (osym, osidesobottomo<s,1>) { return gen(); }
-  template <int t, int s, int b> rectangle<b,s> operator- (osym, dashes<t, osidesobottomo<s,b> >)
-  { analog_literals_assert(t+1 == b); return gen(); }
-  template <int t, int s, int b> rectangle<b,s> operator- (odashes<t>, osidesobottomo<s,b>)
-  { analog_literals_assert(t+1 == b); return gen(); }
-  template <int p, int q, int s, int b> rectangle<b,s> operator- (odashes<p>, dashes<q, osidesobottomo<s,b> >)
-  { analog_literals_assert(p+q+1 == b); return gen(); }
+  template <int s> rectangle<1,s/2> operator- (osym, osidesobottomo<s,1>)
+  { analog_literals_assert(s % 2 == 0); return gen(); }
+  template <int t, int s, int b> rectangle<b,s/2> operator- (osym, dashes<t, osidesobottomo<s,b> >)
+  { analog_literals_assert(t+1 == b); analog_literals_assert(s % 2 == 0); return gen(); }
+  template <int t, int s, int b> rectangle<b,s/2> operator- (odashes<t>, osidesobottomo<s,b>)
+  { analog_literals_assert(t+1 == b); analog_literals_assert(s % 2 == 0); return gen(); }
+  template <int p, int q, int s, int b> rectangle<b,s/2> operator- (odashes<p>, dashes<q, osidesobottomo<s,b> >)
+  { analog_literals_assert(p+q+1 == b); analog_literals_assert(s % 2 == 0); return gen(); }
 
   // Constructing a complete rectangle: (*-----*!!!!o--) - (--o)
-  template <int t, int s, int b> rectangle<t,s> operator- (otoposidesobottom<t,s,b>, osym)
-  { analog_literals_assert(t == b+1); return gen(); }
-  template <int t, int s, int b, int n> rectangle<t,s> operator- (otoposidesobottom<t,s,b>, dashes<n, osym>)
-  { analog_literals_assert(t == b+n+1); return gen(); }
+  template <int t, int s, int b> rectangle<t,s/2> operator- (otoposidesobottom<t,s,b>, osym)
+  { analog_literals_assert(t == b+1); analog_literals_assert(s % 2 == 0); return gen(); }
+  template <int t, int s, int b, int n> rectangle<t,s/2> operator- (otoposidesobottom<t,s,b>, dashes<n, osym>)
+  { analog_literals_assert(t == b+n+1); analog_literals_assert(s % 2 == 0); return gen(); }
 
   // Constructing a complete rectangle: (o---o) | (!!!o---o)
-  template <int t, int s2, int b> rectangle<t, (s2+1)/2> operator| (line<t>, bangs<s2, line<b> >)
-  { analog_literals_assert(s2 % 2 == 1); return gen(); }
+  template <int t, int s, int b> rectangle<t, (s+1)/2> operator| (line<t>, bangs<s, line<b> >)
+  { analog_literals_assert(s % 2 == 1); return gen(); }
 
   // Constructing a complete rectangle: (*---o) * (---o)
   template <int t, int b> rectangle<t, 0> operator* (line<t>, dashes<b, osym>)
@@ -184,16 +186,16 @@ namespace analog_literals {
 
   // Constructing a complete rectangle: (o--) * (!!!!*--o)
   rectangle<0,0> operator* (osym, line<0>) { return gen(); }
-  template <int t, int s2, int b> rectangle<t, s2/2> operator* (odashes<t>, bangs<s2, line<b> >)
-  { analog_literals_assert(t == b); analog_literals_assert(s2 % 2 == 0); return gen(); }
-  template <int s2> rectangle<0, s2/2> operator* (osym, bangs<s2, line<0> >)
-  { analog_literals_assert(s2 % 2 == 0); return gen(); }
+  template <int t, int s, int b> rectangle<t,s/2> operator* (odashes<t>, bangs<s, line<b> >)
+  { analog_literals_assert(t == b); analog_literals_assert(s % 2 == 0); return gen(); }
+  template <int s> rectangle<0,s/2> operator* (osym, bangs<s, line<0> >)
+  { analog_literals_assert(s % 2 == 0); return gen(); }
   template <int t, int b> rectangle<t,0> operator* (odashes<t>, line<b>)
   { analog_literals_assert(t == b); return gen(); }
 
   // Constructing a complete rectangle: (*o) || (!!!!*o)
   rectangle<0,1> operator|| (line<0>, line<0>) { return gen(); }
-  template <int s2> rectangle<0, s2/2 + 1> operator|| (line<0>, bangs<s2, line<0> >) { return gen(); }
+  template <int s> rectangle<0, s/2 + 1> operator|| (line<0>, bangs<s, line<0> >) { return gen(); }
 
 } // analog_literals
 
