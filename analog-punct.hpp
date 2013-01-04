@@ -99,15 +99,18 @@ namespace analog_literals {
   template <int s2> bangs<s2, line<1> > operator- (bangs<s2, osym>, osym) { return gen(); }
   template <int s2, int q> bangs<s2, line<q+1> > operator- (bangs<s2, osym>, dashes<q, osym>) { return gen(); }
 
-  // represents *!!!!*--o
+  // osidesobottomo represents *!!!!*--o
   template <int s, int b> struct osidesobottomo {};
-  template <int b> osidesobottomo<0,b> operator * (line<b>) { return gen(); }
+  template <int b> osidesobottomo<0,b> operator* (line<b>) { return gen(); }
+  template <int b> osidesobottomo<0,b> operator* (osym, dashes<b, osym>) { return gen(); }
   template <int s2, int b> osidesobottomo<s2/2, b> operator* (bangs<s2, line<b> >)
   { analog_literals_assert(s2 % 2 == 0); return gen(); }
 
   template <int s, int b> dashes<1, osidesobottomo<s,b> > operator~ (osidesobottomo<s,b>) { return gen(); }
   template <int s, int b> dashes<1, osidesobottomo<s,b> > operator- (osidesobottomo<s,b>) { return gen(); }
   template <int s, int b> dashes<2, osidesobottomo<s,b> > operator-- (osidesobottomo<s,b>) { return gen(); }
+
+  template <int t, int b> dashes<t, osidesobottomo<0,b> > operator* (dashes<t,osym>, dashes<b,osym>) { return gen(); }
 
   // osidesobottom represents *!!!!o--
   template <int s, int b> struct osidesobottom {};
@@ -120,7 +123,10 @@ namespace analog_literals {
   { analog_literals_assert(s2 % 2 == 1); return gen(); }
   template <int t, int s2, int b> dashes<t, osidesobottom<(s2+1)/2, b> > operator| (dashes<t, osym>, bangs<s2, odashes<b> >)
   { analog_literals_assert(s2 % 2 == 1); return gen(); }
+
+  dashes<1, osidesobottom<0,0> > operator~ (line<0>) { return gen(); }
   dashes<1, osidesobottom<0,0> > operator- (line<0>) { return gen(); }
+  dashes<2, osidesobottom<0,0> > operator-- (line<0>) { return gen(); }
 
   template <int s, int b> dashes<1, osidesobottom<s,b> > operator~ (osidesobottom<s,b>) { return gen(); }
   template <int s, int b> dashes<1, osidesobottom<s,b> > operator- (osidesobottom<s,b>) { return gen(); }
@@ -128,8 +134,14 @@ namespace analog_literals {
 
   // otoposidesobottom represents *---*!!!!o--
   template <int t, int s, int b> struct otoposidesobottom {};
+  template <int t> otoposidesobottom<t,0,0> operator* (odashes<t>, osym) { return gen(); }
+  template <int t, int b> otoposidesobottom<t,0,b> operator* (odashes<t>, odashes<b>) { return gen(); }
+  template <int t, int s2, int b> otoposidesobottom<t, s2/2, b> operator* (odashes<t>, bangs<s2, odashes<b> >)
+  { analog_literals_assert(s2 % 2 == 0); analog_literals_assert(t > b); return gen(); }
   template <int t, int s, int b> otoposidesobottom<t,s,b> operator* (dashes<t, osidesobottom<s,b> >)
   { analog_literals_assert(t > b); return gen(); }
+  template <int t, int s2> otoposidesobottom<t, s2/2, 0> operator* (odashes<t>, bangs<s2, osym>)
+  { analog_literals_assert(s2 % 2 == 0); return gen(); }
   template <int n, int s, int b> otoposidesobottom<n+1,s,b> operator- (odashes<n>, osidesobottom<s,b>)
   { analog_literals_assert(n+1 > b); return gen(); }
   template <int p, int q, int s, int b> otoposidesobottom<p+q+1,s,b> operator- (odashes<p>, dashes<q, osidesobottom<s,b> >)
@@ -138,8 +150,7 @@ namespace analog_literals {
   { analog_literals_assert(q+1 > b); return gen(); }
   template <int s, int b> otoposidesobottom<1,s,b> operator- (osym, osidesobottom<s,b>)
   { analog_literals_assert(b <= 1); return gen(); }
-  template <int t, int s2> otoposidesobottom<t, s2/2, 0> operator* (odashes<t>, bangs<s2, osym>)
-  { analog_literals_assert(s2 % 2 == 0); return gen(); }
+  template <int t> otoposidesobottom<t+1,0,0> operator- (odashes<t>, line<0>) { return gen(); }
   otoposidesobottom<1,0,0> operator- (osym, line<0>) { return gen(); }
 
   // Constructing a complete rectangle: * (--*!!!!*--o)
@@ -215,62 +226,113 @@ int main ()
   (rectangle<0,0>)(*o*o);
   (rectangle<0,0>)(o**o);
 
+  (rectangle<0,1>)(**!!*o);             (rectangle<0,2>)(**!!!!*o);
+  (rectangle<0,1>)(*o|!*o);             (rectangle<0,2>)(*o|!!!*o);
+    (rectangle<0,1>)(*o||*o);             (rectangle<0,2>)(*o||!!*o);
+  (rectangle<0,1>)(o*!!*o);             (rectangle<0,2>)(o*!!!!*o);
+
   (rectangle<1,0>)(*-**-o);
   (rectangle<1,0>)(*-*o-o);
   (rectangle<1,0>)(*-o*-o);
   (rectangle<1,0>)(o-**-o);
   (rectangle<1,0>)(o-*o-o);
 
-  (rectangle<0,1>)(**!!*o);
-  (rectangle<0,1>)(*o|!*o);
-          (rectangle<0,1>)(*o||*o);
-  (rectangle<0,1>)(o*!!*o);
+  (rectangle<1,1>)(*-* !! *-o);         (rectangle<1,2>)(*-* !!!! *-o);
+  (rectangle<1,1>)(*-* !! o-o);         (rectangle<1,2>)(*-* !!!! o-o);
+  (rectangle<1,1>)(*-o |! *-o);         (rectangle<1,2>)(*-o |!!! *-o);
+  (rectangle<1,1>)(*-o |! o-o);         (rectangle<1,2>)(*-o |!!! o-o);
+  (rectangle<1,1>)(o-* !! *-o);         (rectangle<1,2>)(o-* !!!! *-o);
+  (rectangle<1,1>)(o-* !! o-o);         (rectangle<1,2>)(o-* !!!! o-o);
+  (rectangle<1,1>)(o-o |! *-o);         (rectangle<1,2>)(o-o |!!! *-o);
+  (rectangle<1,1>)(o-o |! o-o);         (rectangle<1,2>)(o-o |!!! o-o);
 
-  (rectangle<0,2>)(**!!!!*o);
-  (rectangle<0,2>)(*o|!!!*o);
-          (rectangle<0,2>)(*o||!!*o);
-  (rectangle<0,2>)(o*!!!!*o);
+  (rectangle<2,0>)(*--**--o);
+  (rectangle<2,0>)(*--*o-~o);
+  (rectangle<2,0>)(*--o*--o);
+  (rectangle<2,0>)(o--**--o);
+    (rectangle<2,0>)(o-~**--o);
+  (rectangle<2,0>)(o--*o-~o);
+    (rectangle<2,0>)(o-~*o-~o);
 
-  (rectangle<1,1>)(*-* !! *-o);
-  (rectangle<1,1>)(*-* !! o-o);
-  (rectangle<1,1>)(*-o |! *-o);
-  (rectangle<1,1>)(*-o |! o-o);
-  (rectangle<1,1>)(o-* !! *-o);
-  (rectangle<1,1>)(o-* !! o-o);
-  (rectangle<1,1>)(o-o |! *-o);
-  (rectangle<1,1>)(o-o |! o-o);
+  (rectangle<2,1>)(*--* !! *--o);       (rectangle<2,2>)(*--* !!!! *--o);
+  (rectangle<2,1>)(*--* !! o-~o);       (rectangle<2,2>)(*--* !!!! o-~o);
+  (rectangle<2,1>)(*--o |! *--o);       (rectangle<2,2>)(*--o |!!! *--o);
+  (rectangle<2,1>)(*--o |! o-~o);       (rectangle<2,2>)(*--o |!!! o-~o);
+  (rectangle<2,1>)(o--* !! *--o);       (rectangle<2,2>)(o--* !!!! *--o);
+    (rectangle<2,1>)(o-~* !! *--o);       (rectangle<2,2>)(o-~* !!!! *--o);
+  (rectangle<2,1>)(o--* !! o-~o);       (rectangle<2,2>)(o--* !!!! o-~o);
+  (rectangle<2,1>)(o-~o |! *--o);       (rectangle<2,2>)(o-~o |!!! *--o);
+  (rectangle<2,1>)(o-~o |! o-~o);       (rectangle<2,2>)(o-~o |!!! o-~o);
 
-  (rectangle<2,1>)(*--* !! *--o);
-  (rectangle<2,1>)(*--* !! o-~o);
-  (rectangle<2,1>)(*--o |! *--o);
-  (rectangle<2,1>)(*--o |! o-~o);
-  (rectangle<2,1>)(o--* !! *--o);
-          (rectangle<2,1>)(o-~* !! *--o);
-  (rectangle<2,1>)(o--* !! o-~o);
-  (rectangle<2,1>)(o-~o |! *--o);
-  (rectangle<2,1>)(o-~o |! o-~o);
+  (rectangle<3,0>)(*---**---o);
+  (rectangle<3,0>)(*---*o---o);
+    (rectangle<3,0>)(*---*o-~~o);
+  (rectangle<3,0>)(*---o*---o);
+  (rectangle<3,0>)(o---**---o);
+    (rectangle<3,0>)(o-~~**---o);
+  (rectangle<3,0>)(o---*o---o);
+    (rectangle<3,0>)(o---*o-~~o);
+    (rectangle<3,0>)(o-~~*o---o);
+    (rectangle<3,0>)(o-~~*o-~~o);
+  (rectangle<3,0>)(o---o*---o);
+    (rectangle<3,0>)(o-~~o*---o);
 
-  (rectangle<3,1>)(*---* !! *---o);
-  (rectangle<3,1>)(*---* !! o---o);
-          (rectangle<3,1>)(*---* !! o-~-o);
-  (rectangle<3,1>)(*---o |! *---o);
-  (rectangle<3,1>)(*---o |! o---o);
-          (rectangle<3,1>)(*---o |! o-~-o);
-  (rectangle<3,1>)(o---* !! *---o);
-          (rectangle<3,1>)(o-~-* !! *---o);
-  (rectangle<3,1>)(o---* !! o---o);
-          (rectangle<3,1>)(o---* !! o-~-o);
-          (rectangle<3,1>)(o-~-* !! o---o);
-          (rectangle<3,1>)(o-~-* !! o-~-o);
-  (rectangle<3,1>)(o---o |! *---o);
-          (rectangle<3,1>)(o---o |! *-~-o);
-          (rectangle<3,1>)(o-~-o |! *---o);
-          (rectangle<3,1>)(o-~-o |! *-~-o);
-  (rectangle<3,1>)(o---o |! o---o);
-      (rectangle<3,1>)(o---o |! o-~-o);
-      (rectangle<3,1>)(o-~-o |! o---o);
-      (rectangle<3,1>)(o-~-o |! o-~-o);
+  (rectangle<3,1>)(*---* !! *---o);     (rectangle<3,2>)(*---* !!!! *---o);
+  (rectangle<3,1>)(*---* !! o---o);     (rectangle<3,2>)(*---* !!!! o---o);
+    (rectangle<3,1>)(*---* !! o-~-o);     (rectangle<3,2>)(*---* !!!! o-~-o);
+  (rectangle<3,1>)(*---o |! *---o);     (rectangle<3,2>)(*---o |!!! *---o);
+  (rectangle<3,1>)(*---o |! o---o);     (rectangle<3,2>)(*---o |!!! o---o);
+    (rectangle<3,1>)(*---o |! o-~-o);     (rectangle<3,2>)(*---o |!!! o-~-o);
+  (rectangle<3,1>)(o---* !! *---o);     (rectangle<3,2>)(o---* !!!! *---o);
+    (rectangle<3,1>)(o-~-* !! *---o);     (rectangle<3,2>)(o-~-* !!!! *---o);
+  (rectangle<3,1>)(o---* !! o---o);     (rectangle<3,2>)(o---* !!!! o---o);
+    (rectangle<3,1>)(o---* !! o-~-o);     (rectangle<3,2>)(o---* !!!! o-~-o);
+    (rectangle<3,1>)(o-~-* !! o---o);     (rectangle<3,2>)(o-~-* !!!! o---o);
+    (rectangle<3,1>)(o-~-* !! o-~-o);     (rectangle<3,2>)(o-~-* !!!! o-~-o);
+  (rectangle<3,1>)(o---o |! *---o);     (rectangle<3,2>)(o---o |!!! *---o);
+    (rectangle<3,1>)(o---o |! *-~-o);     (rectangle<3,2>)(o---o |!!! *-~-o);
+    (rectangle<3,1>)(o-~-o |! *---o);     (rectangle<3,2>)(o-~-o |!!! *---o);
+    (rectangle<3,1>)(o-~-o |! *-~-o);     (rectangle<3,2>)(o-~-o |!!! *-~-o);
+  (rectangle<3,1>)(o---o |! o---o);     (rectangle<3,2>)(o---o |!!! o---o);
+    (rectangle<3,1>)(o---o |! o-~-o);     (rectangle<3,2>)(o---o |!!! o-~-o);
+    (rectangle<3,1>)(o-~-o |! o---o);     (rectangle<3,2>)(o-~-o |!!! o---o);
+    (rectangle<3,1>)(o-~-o |! o-~-o);     (rectangle<3,2>)(o-~-o |!!! o-~-o);
 
+  (rectangle<4,0>)(*----**----o);
+  (rectangle<4,0>)(*----*o---~o);
+      (rectangle<4,0>)(*----*o-~~~o);
+  (rectangle<4,0>)(*----o*----o);
+  (rectangle<4,0>)(o----**----o);
+      (rectangle<4,0>)(o---~**----o);
+      (rectangle<4,0>)(o-~~~**----o);
+  (rectangle<4,0>)(o----*o---~o);
+      (rectangle<4,0>)(o----*o-~~~o);
+      (rectangle<4,0>)(o---~*o---~o);
+      (rectangle<4,0>)(o-~~~*o-~~~o);
+  (rectangle<4,0>)(o---~o*----o);
+      (rectangle<4,0>)(o-~~~o*----o);
+
+  (rectangle<4,1>)(*----* !! *----o);   (rectangle<4,2>)(*----* !!!! *----o);
+  (rectangle<4,1>)(*----* !! o---~o);   (rectangle<4,2>)(*----* !!!! o---~o);
+    (rectangle<4,1>)(*----* !! o-~--o);   (rectangle<4,2>)(*----* !!!! o-~--o);
+  (rectangle<4,1>)(*----o |! *----o);   (rectangle<4,2>)(*----o |!!! *----o);
+  (rectangle<4,1>)(*----o |! o---~o);   (rectangle<4,2>)(*----o |!!! o---~o);
+    (rectangle<4,1>)(*----o |! o-~--o);   (rectangle<4,2>)(*----o |!!! o-~--o);
+  (rectangle<4,1>)(o----* !! *----o);   (rectangle<4,2>)(o----* !!!! *----o);
+    (rectangle<4,1>)(o---~* !! *----o);   (rectangle<4,2>)(o---~* !!!! *----o);
+    (rectangle<4,1>)(o-~--* !! *----o);   (rectangle<4,2>)(o-~--* !!!! *----o);
+  (rectangle<4,1>)(o----* !! o---~o);   (rectangle<4,2>)(o----* !!!! o---~o);
+    (rectangle<4,1>)(o----* !! o-~--o);   (rectangle<4,2>)(o----* !!!! o-~--o);
+    (rectangle<4,1>)(o---~* !! o---~o);   (rectangle<4,2>)(o---~* !!!! o---~o);
+    (rectangle<4,1>)(o---~* !! o-~--o);   (rectangle<4,2>)(o---~* !!!! o-~--o);
+    (rectangle<4,1>)(o-~--* !! o---~o);   (rectangle<4,2>)(o-~--* !!!! o---~o);
+    (rectangle<4,1>)(o-~--* !! o-~--o);   (rectangle<4,2>)(o-~--* !!!! o-~--o);
+  (rectangle<4,1>)(o---~o |! *----o);   (rectangle<4,2>)(o---~o |!!! *----o);
+    (rectangle<4,1>)(o-~--o |! *----o);   (rectangle<4,2>)(o-~--o |!!! *----o);
+  (rectangle<4,1>)(o---~o |! o---~o);   (rectangle<4,2>)(o---~o |!!! o---~o);
+    (rectangle<4,1>)(o---~o |! o-~~~o);   (rectangle<4,2>)(o---~o |!!! o-~~~o);
+    (rectangle<4,1>)(o-~~~o |! o---~o);   (rectangle<4,2>)(o-~~~o |!!! o---~o);
+    (rectangle<4,1>)(o-~~~o |! o-~~~o);   (rectangle<4,2>)(o-~~~o |!!! o-~~~o);
 
 
   rectangle<5, 3>(*-----*
