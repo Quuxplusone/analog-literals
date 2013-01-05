@@ -236,52 +236,70 @@ namespace analog_literals {
   template <int t> otopodiag<t,1> operator| (line<t>, Lsym) { return gen(); }
   template <int t, int l> otopodiag<t,l+1> operator| (otopodiag<t,l>, Lsym) { return gen(); }
 
+  // otopodiagotopo represents *~~*!L|L|L|*--o
+  template <int t, int d> struct otopodiagotopo {};
+  template <int t, int d> otopodiagotopo<t,d> operator| (otopodiag<t,d>, line<t>) { return gen(); }
+
   // obase represents *!!L|!L|!L
   template <int l> struct obase {};
   obase<1> operator* (bangs<2,Lsym>) { return gen(); }
   template <int l> obase<l> operator|| (osym, base<l>) { return gen(); }
 
-  // oobase represents **!!L|!L|!L
-  template <int l> struct oobase {};
-  oobase<1> operator* (osym, bangs<2,Lsym>) { return gen(); }
-  template <int l> oobase<l> operator* (obase<l>) { return gen(); }
+  bangs<1, obase<1> > operator! (obase<1>) { return gen(); }
 
-  template <int l> dashes<1, oobase<l> > operator~ (oobase<l>) { return gen(); }
-  template <int l> dashes<1, oobase<l> > operator- (oobase<l>) { return gen(); }
-  template <int l> dashes<2, oobase<l> > operator-- (oobase<l>) { return gen(); }
+  // olongobase represents *!!!!!!*!!L|!L|!L
+  template <int l, int b> struct olongobase {};
+  olongobase<0,1> operator* (osym, bangs<2,Lsym>) { return gen(); }
+  template <int b> olongobase<0,b> operator* (obase<b>) { return gen(); }
+  template <int l, int b> olongobase<l,b> operator* (bangs<l, obase<b> >)
+  { analog_literals_assert(l % 3 == 0); return gen(); }
 
-  template <int t> dashes<t, oobase<1> > operator* (dashes<t,osym>, bangs<2,Lsym>) { return gen(); }
+  template <int l, int b> dashes<1, olongobase<l,b> > operator~ (olongobase<l,b>) { return gen(); }
+  template <int l, int b> dashes<1, olongobase<l,b> > operator- (olongobase<l,b>) { return gen(); }
+  template <int l, int b> dashes<2, olongobase<l,b> > operator-- (olongobase<l,b>) { return gen(); }
+
+  template <int t> dashes<t, olongobase<0,1> > operator* (dashes<t,osym>, bangs<2,Lsym>) { return gen(); }
 
   // otopolongobase represents *~~*!!!!!!*!!L|!L|!L
   template <int t, int l, int b> struct otopolongobase {};
   otopolongobase<0,0,1> operator* (osym, obase<1>) { return gen(); }
-  template <int l> otopolongobase<0,0,l> operator* (oobase<l>) { return gen(); }
+  template <int l> otopolongobase<0,l,1> operator* (osym, bangs<l, obase<1> >) { return gen(); }
+  template <int l> otopolongobase<0,l,0> operator* (osidesobottom<l,0>) { return gen(); }
+  template <int l, int b> otopolongobase<0,l,b> operator* (olongobase<l,b>) { return gen(); }
   template <int t> otopolongobase<t,0,1> operator* (line<t>, bangs<2,Lsym>) { return gen(); }
   template <int t> otopolongobase<t,0,1> operator* (odashes<t>, obase<1>) { return gen(); }
-  template <int t, int l> otopolongobase<t,0,l> operator* (dashes<t, oobase<l> >) { return gen(); }
-  otopolongobase<1,0,1> operator- (osym, oobase<1>) { return gen(); }
-  template <int t> otopolongobase<t+1,0,1> operator- (odashes<t>, oobase<1>) { return gen(); }
-  template <int t> otopolongobase<t+1,0,1> operator- (osym, dashes<t, oobase<1> >) { return gen(); }
-  template <int p, int q> otopolongobase<p+q+1,0,1> operator- (odashes<p>, dashes<q, oobase<1> >) { return gen(); }
+  template <int l> otopolongobase<0,l,0> operator* (osym, bangs<l,osym>) { return gen(); }
+  template <int t, int l> otopolongobase<t,l,1> operator* (odashes<t>, bangs<l, obase<1> >) { return gen(); }
+  template <int t, int l, int b> otopolongobase<t,l,b> operator* (dashes<t, olongobase<l,b> >) { return gen(); }
+  template <int l> otopolongobase<1,l,1> operator- (osym, olongobase<l,1>) { return gen(); }
+  template <int t, int l> otopolongobase<t+1,l,1> operator- (odashes<t>, olongobase<l,1>) { return gen(); }
+  template <int t, int l> otopolongobase<t+1,l,1> operator- (osym, dashes<t, olongobase<l,1> >) { return gen(); }
+  template <int p, int q, int l> otopolongobase<p+q+1,l,1> operator- (odashes<p>, dashes<q, olongobase<l,1> >) { return gen(); }
+
 
   // otopodiagotopolongobase represents o--o!L|L|L|o--o|!!o!!L|!L|!L
   template <int t, int d, int l, int b> struct otopodiagotopolongobase {};
   otopodiagotopolongobase<0,1,0,0> operator| (otopodiag<0,1>, osidesobottomo<0,0>) { return gen(); }
   template <int d> otopodiagotopolongobase<0,d,0,0> operator| (otopodiag<0,d>, osidesobottomo<0,0>) { return gen(); }
-  template <int t, int d> otopodiagotopolongobase<t,d,0,0> operator| (otopodiag<t,d>, otoposidesobottom<t,0,0>) { return gen(); }
-  template <int t, int d, int b> otopodiagotopolongobase<t,d,0,b> operator| (otopodiag<t,d>, otopolongobase<t,0,b>) { return gen(); }
-  template <int t, int d, int b> otopodiagotopolongobase<t,d,0,b+1> operator| (otopodiagotopolongobase<t,d,0,b>, bangs<1,Lsym>) { return gen(); }
-  template <int t, int d, int b> otopodiagotopolongobase<t,d,0,b+1> operator|| (otopodiagotopolongobase<t,d,0,b>, Lsym) { return gen(); }
-  template <int t, int d, int p, int q> otopodiagotopolongobase<t,d,0,p+q> operator|| (otopodiagotopolongobase<t,d,0,p>, base<q>) { return gen(); }
+  template <int t, int d, int l> otopodiagotopolongobase<t,d,l,0> operator| (otopodiag<t,d>, otoposidesobottom<t,l,0>) { return gen(); }
+  template <int t, int d, int l> otopodiagotopolongobase<t,d,l+1,0> operator| (otopodiagotopo<t,d>, bangs<l, osym>) { return gen(); }
+  template <int t, int d, int l> otopodiagotopolongobase<t,d,l+1,1> operator| (otopodiagotopo<t,d>, bangs<l, obase<1> >) { return gen(); }
+  template <int t, int d, int l, int b> otopodiagotopolongobase<t,d,l,b> operator| (otopodiag<t,d>, otopolongobase<t,l,b>) { return gen(); }
+  template <int t, int d, int l, int b> otopodiagotopolongobase<t,d,l,b+1> operator| (otopodiagotopolongobase<t,d,l,b>, bangs<1,Lsym>) { return gen(); }
+  template <int t, int d, int l, int b> otopodiagotopolongobase<t,d,l,b+1> operator|| (otopodiagotopolongobase<t,d,l,b>, Lsym) { return gen(); }
+  template <int t, int d, int l, int p, int q> otopodiagotopolongobase<t,d,l,p+q> operator|| (otopodiagotopolongobase<t,d,l,p>, base<q>) { return gen(); }
 
   // Constructing a cuboid: (o-~o|L|o-~o|!L) | (!o-~o)
-  template <int t, int d> cuboid<t,d+1,d> operator| (otopodiagotopolongobase<t,d,0,d>, bangs<1,line<t> >) { return gen(); }
+  template <int t, int l, int d> cuboid<t,d+(l/3)+1,d> operator| (otopodiagotopolongobase<t,d,l,d>, bangs<1,line<t> >)
+  { analog_literals_assert(l % 3 == 0); return gen(); }
 
   // Constructing a cuboid: (oo|L|oo|!L) || (oo)
-  template <int d> cuboid<0,d+1,d> operator|| (otopodiagotopolongobase<0,d,0,d>, line<0>) { return gen(); }
+  template <int d, int l> cuboid<0,d+(l/3)+1,d> operator|| (otopodiagotopolongobase<0,d,l,d>, line<0>)
+  { analog_literals_assert(l % 3 == 0); return gen(); }
 
   // Constructing a cuboid: (oo|L|oo) || (L|!oo)
-  template <int p, int q> cuboid<0,p+q+1,p+q> operator|| (otopodiagotopolongobase<0,p+q,0,p>, baseline<q,0>) { return gen(); }
+  template <int p, int q, int l> cuboid<0,p+q+(l/3)+1,p+q> operator|| (otopodiagotopolongobase<0,p+q,l,p>, baseline<q,0>)
+  { analog_literals_assert(l % 3 == 0); return gen(); }
 
 } // analog_literals
 

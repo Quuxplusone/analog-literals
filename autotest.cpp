@@ -5,6 +5,12 @@
 #include <time.h>
 #include <string>
 
+#if 0
+ #define SQUASH_SPACES(s) squash_spaces(s)
+#else
+ #define SQUASH_SPACES(s) s
+#endif
+
 /* Valid operators are
  *     x--
  *     --x  -x  *x  ~x !x
@@ -91,11 +97,10 @@ bool is_valid_expression(std::string s)
     return (*p == '\0');
 }
 
-
-#ifdef SQUASH_SPACES
-static std::string squash_spaces(const char *s)
+std::string squash_spaces(const std::string &st)
 {
     std::string result = "";
+    const char *s = st.c_str();
     for (int i=0; s[i] != '\0'; ++i) {
         if (isspace(s[i])) {
             if (!result.empty() && *result.rbegin() == '-' && s[i+1] == '-') result += " ";
@@ -106,11 +111,22 @@ static std::string squash_spaces(const char *s)
     }
     return result;
 }
-#endif /* SQUASH_SPACES */
 
 static char R(const char *s)
 {
     return s[rand() % strlen(s)];
+}
+
+std::string random_line(int x)
+{
+    assert(x >= 0);
+
+    std::string s = "";
+    s += R("*o");
+    for (int i=0; i < x; ++i) s += R("~-");
+    s += "o";
+
+    return SQUASH_SPACES(s);
 }
 
 std::string random_rectangle(int x, int y)
@@ -129,10 +145,8 @@ std::string random_rectangle(int x, int y)
     s += R("*o");
     for (int i=0; i < x; ++i) s += R("~-");
     s += R("*o");
-#ifdef SQUASH_SPACES
-    s = squash_spaces(s.c_str());
-#endif /* SQUASH_SPACES */
-    return s;
+
+    return SQUASH_SPACES(s);
 }
 
 std::string random_cuboid(int x, int y, int z)
@@ -170,9 +184,10 @@ std::string random_cuboid(int x, int y, int z)
             for (int i=0; i < x; ++i) s += R("~-");
             s += R("*o");
         } else {
-            s += R("!|");
+            if (j < y) for (int i=0; i < z; ++i) s += " ";
+            s += ((j >= y) ? R("!|") : '!');
             for (int i=0; i < x; ++i) s += " ";
-            s += R("!|");
+            s += ((x==0) ? R("!|") : '!');
         }
         s += "\n    ";
     }
@@ -183,9 +198,15 @@ std::string random_cuboid(int x, int y, int z)
     for (int i=0; i < x; ++i) s += R("~-");
     s += R("*o");
 
-#ifdef SQUASH_SPACES
-    s = squash_spaces(s.c_str());
-#endif /* SQUASH_SPACES */
+    return SQUASH_SPACES(s);
+}
+
+std::string random_valid_line(int x)
+{
+    std::string s = random_line(x);
+    while (!is_valid_expression(s)) {
+        s = random_line(x);
+    }
     return s;
 }
 
@@ -205,6 +226,16 @@ std::string random_valid_cuboid(int x, int y, int z)
         s = random_cuboid(x,y,z);
     }
     return s;
+}
+
+void print_line_test(int x)
+{
+    std::string line_string = random_valid_line(x);
+    const char *r = line_string.c_str();
+    printf("{\n");
+    printf("    line<%d> r = %s;\n", x, r);
+    printf("    assert((%s).length == %d);\n", r, x);
+    printf("}\n");
 }
 
 void print_rectangle_test(int x, int y)
@@ -244,12 +275,15 @@ int main()
     puts("    using namespace analog_literals::symbols;");
     puts("    using namespace analog_literals::shapes;");
     puts("");
-    for (int i=0; i < 0; ++i) {
+    for (int i=0; i < 10; ++i) {
+        print_line_test(rand() % 10);
+    }
+    for (int i=0; i < 10; ++i) {
         print_rectangle_test(rand() % 8, rand() % 5);
     }
-    for (int i=0; i < 1000; ++i) {
+    for (int i=0; i < 100; ++i) {
         int d = 1 + (rand() % 4);
-        print_cuboid_test(rand() % 8, d+1, d);
+        print_cuboid_test(rand() % 8, d+(1 + rand() % 3), d);
     }
     puts("    return 0;");
     puts("}");
