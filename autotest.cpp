@@ -202,31 +202,32 @@ std::string random_cuboid(int x, int y, int z)
     s += R("*o"); s += "\n    ";
 
     for (int j=0; j < y+z+1; ++j) {
+        int edge = 0;
+
         // Draw the left edge of the cuboid.
         if (j < y) {
             s += R("!|");
         } else if (j == y) {
             s += R("*o");
-            for (int i=0; i < z; ++i) s += " ";
         } else {
-            for (int i=0; i < j-y; ++i) s += " ";
+            edge = j-y;
+            for (int i=0; i < edge; ++i) s += " ";
             s += R("L&");
-            for (int i = j-y; i < z; ++i) s += " ";
         }
 
         // Draw the middle and trailing edge.
         if (j < z) {
-            for (int i=0; i < j; ++i) s += " ";
+            for (int i = edge; i < j; ++i) s += " ";
             s += R("L&");
             // for (int i=0; i < x; ++i) s += " ";
             // s += "\\";
         } else if (j == z) {
-            for (int i=0; i < z; ++i) s += " ";
+            for (int i = edge; i < z; ++i) s += " ";
             s += R("*o");
             for (int i=0; i < x; ++i) s += R("~-");
             s += R("*o");
         } else {
-            if (j < y) for (int i=0; i < z; ++i) s += " ";
+            for (int i=edge; i < z; ++i) s += " ";
             s += ((j >= y) ? R("!|") : '!');
             for (int i=0; i < x; ++i) s += " ";
             s += ((x==0) ? R("!|") : '!');
