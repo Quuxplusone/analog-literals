@@ -69,7 +69,9 @@ namespace analog_literals {
 
   template<typename T> os<1,T> operator* (T) { return gen(); }
   template<int n, typename T> os<n+1,T> operator* (os<n,T>) { return gen(); }
-  template<int p, int q, typename T> Ls<p+q+1,T> operator* (os<p>, os<q,T>) { return gen(); }
+  os<1,hline<0> > operator* (os<1>, os<1>) { return gen(); }
+  template<int n, typename T> os<n+2,T> operator* (os<1>, os<n,T>) { return gen(); }
+  template<typename T> os<2,T> operator* (os<1>, T) { return gen(); }
 
   template<typename T> Ls<1,T> operator& (T) { return gen(); }
   template<int n, typename T> Ls<n+1,T> operator& (Ls<n,T>) { return gen(); }
@@ -98,9 +100,9 @@ namespace analog_literals {
   template<int p, int q> hline<p+q+1> operator- (os<1,hs<p> >, hs<q,os<1> >) { return gen(); }
   template<int p> hline<p+1> operator- (os<1,hs<p> >, os<1>) { return gen(); }
 
-  template<int n, int q> os<n,hline<q> > operator* (os<n>, hs<q,os<1> >) { return gen(); }
-  template<int p, int n, int q> hs<p,os<n,hline<q> > > operator* (hs<p,os<n> >, hs<q,os<1> >) { return gen(); }
-  template<int p, int n, int q> vs<p,os<n,hline<q> > > operator* (vs<p,os<n> >, hs<q,os<1> >) { return gen(); }
+  template<int n, int q> os<1,hline<q> > operator* (os<1>, hs<q,os<1> >) { return gen(); }
+  template<int p, int q> hs<p,os<1,hline<q> > > operator* (hs<p,os<1> >, hs<q,os<1> >) { return gen(); }
+  template<int p, int q> vs<p,os<1,hline<q> > > operator* (vs<p,os<1> >, hs<q,os<1> >) { return gen(); }
 
   template<int y> vs<y,hline<1> > operator- (vs<y,os<1> >, os<1>) { return gen(); }
   template<int y, int p> vs<y,hline<p+1> > operator- (vs<y,os<1,hs<p> > >, os<1>) { return gen(); }
@@ -114,14 +116,13 @@ namespace analog_literals {
 
   template<int x, int y> os<1,hs<x,vline<y> > > operator* (os<1,hs<x> >, vs<y,os<1> >) { return gen(); }
 
-  // Misc constructions
-  template<template<int,class> class P, int n, int x> P<n,hs<x,hline<0> > > operator* (P<n,hs<x> >, os<1>) { return gen(); }
-  template<template<int,class> class P, int n, int x, typename T> P<n,hs<x,os<2,T> > > operator* (P<n,hs<x> >, os<1,T>) { return gen(); }
-  template<template<int,class> class P, int n, int x, typename T> P<n,hs<x,os<1,T> > > operator* (P<n,hs<x> >, T) { return gen(); }
-  template<template<int,class> class P, int n, int x, typename T> P<n,hs<x+1,T> > operator- (P<n,nil>, hs<x,T>) { return gen(); }
-  template<template<int,class> class P, int n, typename T> P<n,hs<1,T> > operator- (P<n,nil>, T) { return gen(); }
-  template<template<int,class> class P, int n, int x, typename T> P<n,hs<x+1,T> > operator- (P<n,hs<x> >, T) { return gen(); }
-  template<template<int,class> class P, int n, int p, int q, typename T> P<n,hs<p+q+1,T> > operator- (P<n,hs<p> >, hs<q,T>) { return gen(); }
+// Misc 2-D constructions
+  template<typename T> os<1,hs<1,T> > operator- (os<1>, T) { return gen(); }
+  template<int q, typename T> os<1,hs<q+1,T> > operator- (os<1>, hs<q,T>) { return gen(); }
+  template<int p, typename T> os<1,hs<p+1,T> > operator- (os<1,hs<p> >, T) { return gen(); }
+  template<int p, int q, typename T> os<1,hs<p+q+1,T> > operator- (os<1,hs<p> >, hs<q,T>) { return gen(); }
+  template<int x> os<1,hline<x> > operator* (os<1>, hs<x,os<1> >) { return gen(); }
+  template<int x, int q, typename T> os<1,hs<x,os<q+1,T> > > operator* (os<1,hs<x> >, os<q,T>) { return gen(); }
 
   // Constructing a rectangle: o---o|!!!o---o
   rectangle<0,0> operator* (os<1,hline<0> >) { return gen(); }
@@ -176,34 +177,240 @@ namespace analog_literals {
 
 // Constructions for 3-D literals begin here.
 
-  // Misc constructions
+  // Constructions for vLs
   template<typename T> vLs<1,T> operator! (Ls<1,T>) { return gen(); }
   template<int n, typename T> vLs<n+1,T> operator! (Ls<1,vLs<n,T> >) { return gen(); }
 
+  // Constructions for Lvvs
+  template<typename T> vs<2,Ls<1,T> > operator! (vLs<1,T>) { return gen(); }
   template<typename T> Lvvs<1,T> operator& (vs<2,T>) { return gen(); }
   template<int n, typename T> Lvvs<n+1,T> operator& (vs<2,Lvvs<n,T> >) { return gen(); }
+  template<typename T> Lvvs<1,Ls<1,T> > operator| (Ls<1>, vLs<1,T>) { return gen(); }
+  template<int p, typename T> Lvvs<p+1,Ls<1,T> > operator| (Lvvs<p,Ls<1> >, vLs<1,T>) { return gen(); }
+  template<typename T> Lvvs<1,T> operator| (Ls<1>, vs<1,T>) { return gen(); }
+  template<int p, typename T> Lvvs<p+1,T> operator| (Lvvs<p,Ls<1> >, vs<1,T>) { return gen(); }
+  template<int q, typename T> Lvvs<q+1,T> operator| (Ls<1>, vs<1,Lvvs<q,T> >) { return gen(); }
+  template<int p, int q, typename T> Lvvs<p+q+1,T> operator| (Lvvs<p,Ls<1> >, vs<1,Lvvs<q,T> >) { return gen(); }
+
+// Misc 3-D constructions
+
+  // Rear-top-left corner
+
+  // Rear-top-right corner
+  os<1,rectangle<0,0> > operator* (os<1>, os<1,hline<0> >) { return gen(); }
+  template<int x, typename T> os<1,hs<x,os<1,T> > > operator* (os<1,hs<x> >, T) { return gen(); }
+  template<int x> os<1,hs<x,hline<0> > > operator* (os<1,hs<x> >, os<1>) { return gen(); }
+
+  template<typename T> os<2,vLs<1,T> > operator| (hline<0>, Ls<1,T>) { return gen(); }
+  template<int q, typename T> os<2,vLs<q+1,T> > operator| (hline<0>, Ls<1,vLs<q,T> >) { return gen(); }
+  template<int x, typename T> os<1,hs<x,os<1,vLs<1,T> > > > operator| (hline<x>, Ls<1,T>) { return gen(); }
+  template<int x, int q, typename T> os<1,hs<x,os<1,vLs<q+1,T> > > > operator| (hline<x>, Ls<1,vLs<q,T> >) { return gen(); }
+  template<int p, int q, typename T> os<2,vLs<p+q+1,T> > operator| (os<2,vLs<p> >, Ls<1,vLs<q,T> >) { return gen(); }
+  template<int x, int p, int q, typename T> os<1,hs<x,os<1,vLs<p+q+1,T> > > > operator| (os<1,hs<x,os<1,vLs<p> > > >, Ls<1,vLs<q,T> >) { return gen(); }
+  template<int p, typename T> os<2,vLs<p+1,T> > operator| (os<2,vLs<p> >, Ls<1,T>) { return gen(); }
+  template<int x, int p, typename T> os<1,hs<x,os<1,vLs<p+1,T> > > > operator| (os<1,hs<x,os<1,vLs<p> > > >, Ls<1,T>) { return gen(); }
+
+  // Rear-bottom-left corner
+  template<int n> hs<n,os<1,hline<0> > > operator* (hs<n,os<1> >, os<1>) { return gen(); }
+  Ls<1,hline<0> > operator* (Ls<1>, os<1>) { return gen(); }
+  os<1,rectangle<0,0> > operator* (hline<0>, hline<0>) { return gen(); }
+  template<typename T> Ls<1,os<2,T> > operator* (Ls<1>, os<1,T>) { return gen(); }
+  template<int n> Ls<1,vLs<n,hline<0> > > operator* (Ls<1,vLs<n> >, os<1>) { return gen(); }
+  template<int n, typename T> Ls<1,vLs<n,os<2,T> > > operator* (Ls<1,vLs<n> >, os<1,T>) { return gen(); }
+  template<int x> Ls<1,os<1,hline<x> > > operator* (Ls<1>, hline<x>) { return gen(); }
+  template<typename T> Ls<1,os<3,T> > operator* (Ls<1>, os<2,T>) { return gen(); }
+  template<int n, int z> os<n,vLs<z,hline<0> > > operator* (os<n,vLs<z> >, os<1>) { return gen(); }
+  template<int z, typename T> os<2,vLs<z,os<2,T> > > operator* (os<2,vLs<z> >, os<1,T>) { return gen(); }
+  template<int x> os<1,hs<x,os<1,hline<0> > > > operator* (hline<x>, os<1>) { return gen(); }
+  template<int x, typename T> os<1,hs<x,os<3,T> > > operator* (hline<x>, os<1,T>) { return gen(); }
+  template<int x, int z> os<1,hs<x,os<1,vLs<z,hline<0> > > > > operator* (os<1,hs<x,os<1,vLs<z> > > >, os<1>) { return gen(); }
+  template<int x, int z, typename T> os<1,hs<x,os<1,vLs<z,os<2,T> > > > > operator* (os<1,hs<x,os<1,vLs<z> > > >, os<1,T>) { return gen(); }
+  template<int z> os<2,vLs<z,os<1,hline<0> > > > operator* (os<2,vLs<z> >, hline<0>) { return gen(); }
+  template<int x, int z> os<1,hs<x,os<1,vLs<z,os<1,hline<x> > > > > > operator* (os<1,hs<x,os<1,vLs<z> > > >, hline<x>) { return gen(); }
+  template<int x> os<2,hline<x> > operator* (os<1>, hline<x>) { return gen(); }
+  template<int n, int x> hs<n,os<2,hline<x> > > operator* (hs<n,os<1> >, hline<x>) { return gen(); }
+  template<int n, int x> Ls<1,vLs<n,hline<x> > > operator* (Ls<1,vLs<n> >, hs<x,os<1> >) { return gen(); }
+  template<int n, typename T> Ls<1,vLs<n,os<1,T> > > operator* (Ls<1,vLs<n> >, T) { return gen(); }
+  template<int n, int x> hs<n,os<2,rectangle<x,0> > > operator* (hs<n,os<1> >, rectangle<x,0>) { return gen(); }
+  template<int n, int z> hs<n,os<1,vLs<z,hline<0> > > > operator* (hs<n,os<1,vLs<z> > >, os<1>) { return gen(); }
+  template<int n, int z, typename T> hs<n,os<1,vLs<z,os<2,T> > > > operator* (hs<n,os<1,vLs<z> > >, os<1,T>) { return gen(); }
+  template<int n, int z, typename T> hs<n,os<1,vLs<z,os<1,T> > > > operator* (hs<n,os<1,vLs<z> > >, T) { return gen(); }
+  template<int x, typename T> os<1,hs<x,os<2,T> > > operator* (hline<x>, T) { return gen(); }
+  template<int n, typename T> hs<n,os<3,T> > operator* (hs<n,os<1> >, os<1,T>) { return gen(); }
+  template<int n, int z, typename T> os<n,vLs<z,os<1,T> > > operator* (os<n,vLs<z> >, T) { return gen(); }
+  template<int n, int z, int q, typename T> os<n,vLs<z,os<q+1,T> > > operator* (os<n,vLs<z> >, os<q,T>) { return gen(); }
+  template<int n, typename T> vLs<n,os<3,T> > operator* (vLs<n>, os<2,T>) { return gen(); }
+  template<int n, typename T> Ls<1,vLs<n,os<3,T> > > operator* (Ls<1,vLs<n> >, os<2,T>) { return gen(); }
+
+  // Near-top-left corner
+  os<1,rectangle<0,0> > operator* (os<1,hline<0> >, os<1>) { return gen(); }
+  template<int n> os<2,vLs<n,hline<0> > > operator* (os<2,vLs<n> >, os<1>) { return gen(); }
+  template<int n, int x> Ls<n,os<1,hline<x> > > operator* (Ls<n,os<1> >, hs<x,os<1> >) { return gen(); }
+  template<int n, typename T> Ls<n,os<2,T> > operator* (Ls<n,os<1> >, T) { return gen(); }
+  template<int n> Ls<1,vLs<n,os<1,hline<0> > > > operator* (Ls<1,vLs<n,os<1> > >, os<1>) { return gen(); }
+  template<int n, typename T> Ls<1,vLs<n,os<3,T> > > operator* (Ls<1,vLs<n,os<1> > >, os<1,T>) { return gen(); }
+  template<int n, int x> Ls<1,vLs<n,os<1,hline<x> > > > operator* (Ls<1,vLs<n,os<1> > >, hs<x,os<1> >) { return gen(); }
+  template<int n, typename T> Ls<1,vLs<n,os<2,T> > > operator* (Ls<1,vLs<n,os<1> > >, T) { return gen(); }
+  template<int x> os<1,hs<x,os<2,hline<x> > > > operator* (os<1,hs<x,hline<0> > >, hs<x,os<1> >) { return gen(); }
+  template<int x, typename T> os<1,hs<x,os<3,T> > > operator* (os<1,hs<x,hline<0> > >, T) { return gen(); }
+  template<int x, int z> os<1,vLs<z,os<1,hline<x> > > > operator* (os<1,vLs<z,os<1> > >, hs<x,os<1> >) { return gen(); }
+  template<int n, int x> hs<n,os<2,hline<x> > > operator* (hs<n,hline<0> >, hs<x,os<1> >) { return gen(); }
+  template<int n, int m, int x> hs<n,os<1,vLs<m,os<1,hline<x> > > > > operator* (hs<n,os<1,vLs<m,os<1> > > >, hs<x,os<1> >) { return gen(); }
+  template<int x, int z, typename T> os<1,hs<x,os<1,vLs<z,os<1,hline<x> > > > > > operator* (os<1,hs<x,os<1,vLs<z,os<1> > > > >, hs<x,os<1> >) { return gen(); }
+  template<int x, int z, typename T> os<1,hs<x,os<1,vLs<z,os<2,T> > > > > operator* (os<1,hs<x,os<1,vLs<z,os<1> > > > >, T) { return gen(); }
+  template<typename T> os<3,T> operator* (hline<0>, T) { return gen(); }
+  template<int x> os<2,hline<x> > operator* (hline<0>, hs<x,os<1> >) { return gen(); }
+  template<int x> os<2,rectangle<x,0> > operator* (hline<0>, hs<x,os<1,hline<x> > >) { return gen(); }
+  template<int n, int z, typename T> hs<n,os<1,vLs<z,os<2,T> > > > operator* (hs<n,os<1,vLs<z,os<1> > > >, T) { return gen(); }
+  Ls<1,os<1,hline<0> > > operator* (Ls<1,os<1> >, os<1>) { return gen(); }
+  template<typename T> Ls<1,os<3,T> > operator* (Ls<1,os<1> >, os<1,T>) { return gen(); }
+  template<int x, int z> os<1,hs<x,os<1,vLs<z,os<1,hline<x> > > > > > operator* (os<1,hs<x,os<1,vLs<z,os<1> > > > >, hs<x,os<1> >) { return gen(); }
+  template<int n, int z, int p, typename T> os<n,vLs<z,os<p+1,T> > > operator* (os<n,vLs<z,os<p> > >, T) { return gen(); }
+  template<int n, int x> hs<n,os<3,hs<x,hline<0> > > > operator* (hs<n,hline<0> >, hs<x,hline<0> >) { return gen(); }
+  template<int n, int x> hs<n,os<2,rectangle<x,0> > > operator* (hs<n,hline<0> >, hs<x,os<1,hline<x> > >) { return gen(); }
+  template<int n, typename T> hs<n,os<3,T> > operator* (hs<n,hline<0> >, T) { return gen(); }
+  template<int n> vLs<n,os<1,hline<0> > > operator* (vLs<n,os<1> >, os<1>) { return gen(); }
+  template<int n, typename T> vLs<n,os<3,T> > operator* (vLs<n,os<1> >, os<1,T>) { return gen(); }
+  template<int n, int z> os<n,vLs<z,os<1,hline<0> > > > operator* (os<n,vLs<z,os<1> > >, os<1>) { return gen(); }
+  template<int n, int z, typename T> os<n,vLs<z,os<3,T> > > operator* (os<n,vLs<z,os<1> > >, os<1,T>) { return gen(); }
+
+  Ls<1,os<1,hline<1> > > operator- (Ls<1,hline<0> >, os<1>) { return gen(); }
+  template<int n> vLs<n,os<1,hline<1> > > operator- (vLs<n,hline<0> >, os<1>) { return gen(); }
+  template<int n> Ls<1,vLs<n,os<1,hline<1> > > > operator- (Ls<1,vLs<n,hline<0> > >, os<1>) { return gen(); }
+  os<2,hs<2> > operator-- (hline<0>, int) { return gen(); }
+  template<typename T> os<1,hs<1,os<3,hs<1,T> > > > operator- (os<1,hs<1,os<1,hline<0> > > >, T) { return gen(); }
+  template<int z> os<1,hs<1,os<1,vLs<z,os<1,hline<1> > > > > > operator- (os<1,hs<1,os<1,vLs<z,hline<0> > > > >, os<1>) { return gen(); }
+  template<int z, typename T> os<1,hs<1,os<1,vLs<z,os<2,hs<1,os<1,T> > > > > > > operator- (os<1,hs<1,os<1,vLs<z,hline<0> > > > >, os<1,T>) { return gen(); }
+  os<1,hs<1,os<1,vLs<1,os<2,hs<1,os<1,Ls<1> > > > > > > > operator- (os<1,hs<1,os<1,vLs<1,hline<0> > > > >, os<1,Ls<1> >) { return gen(); }
+  template<int x> os<1,hs<x,os<2,hline<x> > > > operator- (os<1,hs<x,os<1,hline<0> > > >, hs<x-1,os<1> >) { return gen(); }
+  template<int x, typename T> os<1,hs<x,os<3,hs<x,T> > > > operator- (os<1,hs<x,os<1,hline<0> > > >, hs<x-1,T>) { return gen(); }
+  template<int q> Ls<1,os<1,hline<q+1> > > operator- (Ls<1,hline<0> >, hs<q,os<1> >) { return gen(); }
+  template<int p> Ls<1,os<1,hline<p+1> > > operator- (Ls<1,os<2,hs<p> > >, os<1>) { return gen(); }
+  template<int p, int q> Ls<1,os<1,hline<p+q+1> > > operator- (Ls<1,os<2,hs<p> > >, hs<q,os<1> >) { return gen(); }
+  template<typename T> Ls<1,os<2,hs<1,T> > > operator- (Ls<1,hline<0> >, T) { return gen(); }
+  template<int q, typename T> Ls<1,os<2,hs<q+1,T> > > operator- (Ls<1,hline<0> >, hs<q,T>) { return gen(); }
+  template<int p, typename T> Ls<1,os<2,hs<p+1,T> > > operator- (Ls<1,os<2,hs<p> > >, T) { return gen(); }
+  template<int p, int q, typename T> Ls<1,os<2,hs<p+q+1,T> > > operator- (Ls<1,os<2,hs<p> > >, hs<q,T>) { return gen(); }
+  template<int n, typename T> Ls<1,vLs<n,os<2,hs<1,T> > > > operator- (Ls<1,vLs<n,hline<0> > >, T) { return gen(); }
+  template<int n, int p, typename T> Ls<1,vLs<n,os<2,hs<p+1,T> > > > operator- (Ls<1,vLs<n,os<2,hs<p> > > >, T) { return gen(); }
+  template<int n, int q, typename T> Ls<1,vLs<n,os<2,hs<q+1,T> > > > operator- (Ls<1,vLs<n,hline<0> > >, hs<q,T>) { return gen(); }
+  template<int n, int p, int q, typename T> Ls<1,vLs<n,os<2,hs<p+q+1,T> > > > operator- (Ls<1,vLs<n,os<2,hs<p> > > >, hs<q,T>) { return gen(); }
+  template<int x, int p> os<1,hs<x,os<2,hline<x> > > > operator- (os<1,hs<x,os<3,hs<p> > > >, hs<x-p-1,os<1> >) { return gen(); }
+  template<int x> os<1,hs<x,os<2,hline<x> > > > operator- (os<1,hs<x,os<3,hs<x-1> > > >, os<1>) { return gen(); }
+  template<int x, int p, typename T> os<1,hs<x,os<3,hs<x,T> > > > operator- (os<1,hs<x,os<3,hs<p> > > >, hs<x-p-1,T>) { return gen(); }
+  template<int x, typename T> os<1,hs<x,os<3,hs<x,T> > > > operator- (os<1,hs<x,os<3,hs<x-1> > > >, T) { return gen(); }
+  template<int x, int z> os<1,hs<x,os<1,vLs<z,os<1,hline<x> > > > > > operator- (os<1,hs<x,os<1,vLs<z,hline<0> > > > >, hs<x-1,os<1> >) { return gen(); }
+  template<int x, int z, int p> os<1,hs<x,os<1,vLs<z,os<1,hline<x> > > > > > operator- (os<1,hs<x,os<1,vLs<z,os<2,hs<p> > > > > >, hs<x-p-1,os<1> >) { return gen(); }
+  template<int x, int z> os<1,hs<x,os<1,vLs<z,os<1,hline<x> > > > > > operator- (os<1,hs<x,os<1,vLs<z,os<2,hs<x-1> > > > > >, os<1>) { return gen(); }
+  template<int x, int z, typename T> os<1,hs<x,os<1,vLs<z,os<2,hs<x,T> > > > > > operator- (os<1,hs<x,os<1,vLs<z,hline<0> > > > >, hs<x-1,T>) { return gen(); }
+  template<int x, int z, int p, typename T> os<1,hs<x,os<1,vLs<z,os<2,hs<x,T> > > > > > operator- (os<1,hs<x,os<1,vLs<z,os<2,hs<p> > > > > >, hs<x-p-1,T>) { return gen(); }
+  template<int x, int z, typename T> os<1,hs<x,os<1,vLs<z,os<2,hs<x,T> > > > > > operator- (os<1,hs<x,os<1,vLs<z,os<2,hs<x-1> > > > > >, T) { return gen(); }
+  template<int n, int q> vLs<n,os<1,hline<q+1> > > operator- (vLs<n,hline<0> >, hs<q,os<1> >) { return gen(); }
+  template<int n, int p, int q> vLs<n,os<1,hline<p+q+1> > > operator- (vLs<n,os<2,hs<p> > >, hs<q,os<1> >) { return gen(); }
+  template<int n, int p> vLs<n,os<1,hline<p+1> > > operator- (vLs<n,os<2,hs<p> > >, os<1>) { return gen(); }
+  template<int n, int q> Ls<1,vLs<n,os<1,hline<q+1> > > > operator- (Ls<1,vLs<n,hline<0> > >, hs<q,os<1> >) { return gen(); }
+  template<int n, int p, int q> Ls<1,vLs<n,os<1,hline<p+q+1> > > > operator- (Ls<1,vLs<n,os<2,hs<p> > > >, hs<q,os<1> >) { return gen(); }
+  template<int n, int p> Ls<1,vLs<n,os<1,hline<p+1> > > > operator- (Ls<1,vLs<n,os<2,hs<p> > > >, os<1>) { return gen(); }
+
+  // Near-top-right corner
+  template<typename T> Ls<1,os<3,T> > operator* (Ls<1,hline<0> >, T) { return gen(); }
+  template<int x, typename T> Ls<1,os<2,hs<x,os<1,T> > > > operator* (Ls<1,os<2,hs<x> > >, T) { return gen(); }
+  template<int n, int x, typename T> Ls<1,vLs<n,os<2,hs<x,os<1,T> > > > > operator* (Ls<1,vLs<n,os<2,hs<x> > > >, T) { return gen(); }
+  template<int n, typename T> Ls<1,vLs<n,os<3,T> > > operator* (Ls<1,vLs<n,hline<0> > >, T) { return gen(); }
+  template<int x> os<1,hs<x,os<3,hs<x,hline<0> > > > > operator* (os<1,hs<x,os<3,hs<x> > > >, os<1>) { return gen(); }
+  template<int z, typename T> os<2,vLs<z,os<3,T> > > operator* (os<2,vLs<z,hline<0> > >, T) { return gen(); }
+  template<int n, int x> hs<n,os<2,rectangle<x,0> > > operator* (hs<n,os<3,hs<x> > >, hline<x>) { return gen(); }
+  template<int n, int x, typename T> hs<n,os<3,hs<x,os<1,T> > > > operator* (hs<n,os<3,hs<x> > >, T) { return gen(); }
+  template<int n, int x, int z, typename T> hs<n,os<1,vLs<z,os<2,hs<x,os<1,T> > > > > > operator* (hs<n,os<1,vLs<z,os<2,hs<x> > > > >, T) { return gen(); }
+  template<int x, int z, typename T> os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,T> > > > > > > operator* (os<1,hs<x,os<1,vLs<z,os<2,hs<x> > > > > >, T) { return gen(); }
+  template<int n, int x, typename T> hs<n,os<2,hline<x> > > operator* (hs<n,hline<0> >, hs<x,os<1> >) { return gen(); }
+  template<int n, int x> hs<n,os<3,hs<x,hline<0> > > > operator* (hs<n,os<3,hs<x> > >, os<1>) { return gen(); }
+
+  template<typename T> Ls<1,os<3,Lvvs<1,T> > > operator& (Ls<1,os<1,hline<0> > >, vs<2,T>) { return gen(); }
+  template<int q, typename T> Ls<1,os<3,Lvvs<q+1,T> > > operator& (Ls<1,os<1,hline<0> > >, vs<2,Lvvs<q,T> >) { return gen(); }
+  template<int n, typename T> Ls<1,vLs<n,os<3,Lvvs<1,T> > > >  operator& (Ls<1,vLs<n,os<1,hline<0> > > >, vs<2,T>) { return gen(); }
+  template<int n, int q, typename T> Ls<1,vLs<n,os<3,Lvvs<q+1,T> > > >  operator& (Ls<1,vLs<n,os<1,hline<0> > > >, vs<2,Lvvs<q,T> >) { return gen(); }
+  template<int x, int z, int q, typename T> os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<q+1,T> > > > > > > > operator& (os<1,hs<x,os<1,vLs<z,os<1,hline<x> > > > > >, vs<2,Lvvs<q,T> >) { return gen(); }
+  template<int x, int z, typename T> os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<1,T> > > > > > > > operator& (os<1,hs<x,os<1,vLs<z,os<1,hline<x> > > > > >, vs<2,T>) { return gen(); }
+  template<int x, typename T> Ls<1,os<2,hs<x,os<1,Lvvs<1,T> > > > > operator& (Ls<1,os<1,hline<x> > >, vs<2,T>) { return gen(); }
+  template<int x, int q, typename T> Ls<1,os<2,hs<x,os<1,Lvvs<q+1,T> > > > > operator& (Ls<1,os<1,hline<x> > >, vs<2,Lvvs<q,T> >) { return gen(); }
+  template<int n, int x, typename T> Ls<1,vLs<n,os<2,hs<x,os<1,Lvvs<1,T> > > > > > operator& (Ls<1,vLs<n,os<1,hline<x> > > >, vs<2,T>) { return gen(); }
+  template<int n, int x, int q, typename T> Ls<1,vLs<n,os<2,hs<x,os<1,Lvvs<q+1,T> > > > > > operator& (Ls<1,vLs<n,os<1,hline<x> > > >, vs<2,Lvvs<q,T> >) { return gen(); }
+  template<int x, int q, typename T> Ls<1,os<3,hs<x,os<1,Lvvs<q+1,T> > > > > operator& (Ls<1,os<2,hline<x> > >, vs<2,Lvvs<q,T> >) { return gen(); }
+  template<int x, typename T> Ls<1,os<3,hs<x,os<1,Lvvs<1,T> > > > > operator& (Ls<1,os<2,hline<x> > >, vs<2,T>) { return gen(); }
+  template<int n, int q, int z, typename T> os<n,vLs<z,os<3,Lvvs<q+1,T> > > > operator& (os<n,vLs<z,os<1,hline<0> > > >, vs<2,Lvvs<q,T> >) { return gen(); }
+  template<int n, int z, typename T> os<n,vLs<z,os<3,Lvvs<1,T> > > > operator& (os<n,vLs<z,os<1,hline<0> > > >, vs<2,T>) { return gen(); }
+  template<int n, int p, int q, int z, typename T> os<n,vLs<z,os<3,Lvvs<p+q+1,T> > > > operator& (os<n,vLs<z,os<3,Lvvs<p> > > >, vs<2,Lvvs<q,T> >) { return gen(); }
+  template<int n, int p, int z, typename T> os<n,vLs<z,os<3,Lvvs<p+1,T> > > > operator& (os<n,vLs<z,os<3,Lvvs<p> > > >, vs<2,T>) { return gen(); }
+
+  template<int z, typename T> os<2,vLs<z,os<3,Lvvs<1,Ls<1,T> > > > > operator| (os<2,vLs<z,os<3,Ls<1> > > >, vLs<1,T>) { return gen(); }
+  template<int x, int n, typename T> os<1,hs<x,os<1,vLs<n,os<2,hs<x,os<1,Lvvs<1,Ls<1,T> > > > > > > > > operator| (os<1,hs<x,os<1,vLs<n,os<2,hs<x,os<1,Ls<1> > > > > > > >, vLs<1,T>) { return gen(); }
+  template<int x, int z, int p> os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<p+1,Ls<1> > > > > > > > > operator| (os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<p,Ls<1> > > > > > > > >, vLs<1>) { return gen(); }
+  template<int z, typename T> os<2,vLs<z,os<3,Lvvs<1,T> > > > operator| (os<2,vLs<z,os<3,Ls<1> > > >, vs<1,T>) { return gen(); }
+  template<int z, int q, typename T> os<2,vLs<z,os<3,Lvvs<q+1,T> > > > operator| (os<2,vLs<z,os<3,Ls<1> > > >, vs<1,Lvvs<q,T> >) { return gen(); }
+  template<int z, int p, typename T> os<2,vLs<z,os<3,Lvvs<p+1,T> > > > operator| (os<2,vLs<z,os<3,Lvvs<p,Ls<1> > > > >, vs<1,T>) { return gen(); }
+  template<int z, int p, int q, typename T> os<2,vLs<z,os<3,Lvvs<p+q+1,T> > > > operator| (os<2,vLs<z,os<3,Lvvs<p,Ls<1> > > > >, vs<1,Lvvs<q,T> >) { return gen(); }
+  template<int x, int z, typename T> os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<1,T> > > > > > > > operator| (os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Ls<1> > > > > > > >, vs<1,T>) { return gen(); }
+  template<int x, int z, int q, typename T> os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<q+1,T> > > > > > > > operator| (os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Ls<1> > > > > > > >, vs<1,Lvvs<q,T> >) { return gen(); }
+  template<int x, int z, int p, typename T> os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<p+1,T> > > > > > > > operator| (os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<p,Ls<1> > > > > > > > >, vs<1,T>) { return gen(); }
+  template<int x, int z, int p, int q, typename T> os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<p+q+1,T> > > > > > > > operator| (os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<p,Ls<1> > > > > > > > >, vs<1,Lvvs<q,T> >) { return gen(); }
+  template<int n, int z, int p, typename T> os<n,vLs<z,os<3,Lvvs<p+1,T> > > > operator| (os<n,vLs<z,os<3,Lvvs<p,Ls<1> > > > >, vs<1,T>) { return gen(); }
+  template<int n, int z, int p, typename T> os<n,vLs<z,os<3,Lvvs<p+1,Ls<1,T> > > > > operator| (os<n,vLs<z,os<3,Lvvs<p,Ls<1> > > > >, vLs<1,T>) { return gen(); }
+
+  template<int z, typename T> os<2,vLs<z,os<3,Lvvs<1,T> > > > operator|| (os<2,vLs<z,os<3,Ls<1> > > >, T) { return gen(); }
+  template<int z, int q, typename T> os<2,vLs<z,os<3,Lvvs<q+1,T> > > > operator|| (os<2,vLs<z,os<3,Ls<1> > > >, Lvvs<q,T>) { return gen(); }
+  template<int z, int p, typename T> os<2,vLs<z,os<3,Lvvs<p+1,T> > > > operator|| (os<2,vLs<z,os<3,Lvvs<p,Ls<1> > > > >, T) { return gen(); }
+  template<int z, int p, int q, typename T> os<2,vLs<z,os<3,Lvvs<p+q+1,T> > > > operator|| (os<2,vLs<z,os<3,Lvvs<p,Ls<1> > > > >, Lvvs<q,T>) { return gen(); }
+
+  // Near-bottom-left corner
+  template<int n, int x> hs<n,os<2,rectangle<x,0> > > operator* (hs<n,os<2,hline<x> > >, hs<x,os<1> >) { return gen(); }
+  template<int n, int x> os<n,rectangle<x,0> > operator* (os<n,hline<x> >, hs<x,os<1> >) { return gen(); }
+
+  template<int n, int m> vs<n,Lvvs<m,hline<1> > > operator- (vs<n,Lvvs<m,os<1> > >, os<1>) { return gen(); }
+  template<int n, int m, int q> vs<n,Lvvs<m,hline<q+1> > > operator- (vs<n,Lvvs<m,os<1> > >, hs<q,os<1> >) { return gen(); }
+  template<int n, int m, int p, int q> vs<n,Lvvs<m,hline<p+q+1> > > operator- (vs<n,Lvvs<m,os<1,hs<p> > > >, hs<q,os<1> >) { return gen(); }
+  template<int n, int m, int p> vs<n,Lvvs<m,hline<p+1> > > operator- (vs<n,Lvvs<m,os<1,hs<p> > > >, os<1>) { return gen(); }
+  template<int n, int z> os<n,hs<1,os<1,Lvvs<z,hline<1> > > > > operator- (os<2,hs<1,os<1,Lvvs<z,os<1> > > > >, os<1>) { return gen(); }
+  template<int n, int z> vLs<n,os<2,hs<1,os<1,Lvvs<z,hline<1> > > > > > operator- (vLs<n,os<2,hs<1,os<1,Lvvs<z,os<1> > > > > >, os<1>) { return gen(); }
+  template<int z> Ls<1,os<2,hs<1,os<1,Lvvs<z,hline<1> > > > > > operator- (Ls<1,os<2,hs<1,os<1,Lvvs<z,os<1> > > > > >, os<1>) { return gen(); }
+  template<int n, int z> Ls<1,vLs<n,os<2,hs<1,os<1,Lvvs<z,hline<1> > > > > > > operator- (Ls<1,vLs<n,os<2,hs<1,os<1,Lvvs<z,os<1> > > > > > >, os<1>) { return gen(); }
+  template<int n, int x, int z> os<n,hs<x,os<1,Lvvs<z,hline<x> > > > > operator- (os<2,hs<x,os<1,Lvvs<z,os<1,hs<x-1> > > > > >, os<1>) { return gen(); }
+  template<int n, int x, int z, int p> os<n,hs<x,os<1,Lvvs<z,hline<x> > > > > operator- (os<2,hs<x,os<1,Lvvs<z,os<1,hs<p> > > > > >, hs<x-p-1,os<1> >) { return gen(); }
+  template<int n, int x, int z> os<n,hs<x,os<1,Lvvs<z,hline<x> > > > > operator- (os<2,hs<x,os<1,Lvvs<z,os<1> > > > >, hs<x-1,os<1> >) { return gen(); }
+  template<int n, int x, int z> vLs<n,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > operator- (vLs<n,os<2,hs<x,os<1,Lvvs<z,os<1,hs<x-1> > > > > > >, os<1>) { return gen(); }
+  template<int n, int x, int z, int p> vLs<n,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > operator- (vLs<n,os<2,hs<x,os<1,Lvvs<z,os<1,hs<p> > > > > > >, hs<x-p-1,os<1> >) { return gen(); }
+  template<int n, int x, int z> vLs<n,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > operator- (vLs<n,os<2,hs<x,os<1,Lvvs<z,os<1> > > > > >, hs<x-1,os<1> >) { return gen(); }
+  template<int x, int z> Ls<1,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > operator- (Ls<1,os<2,hs<x,os<1,Lvvs<z,os<1,hs<x-1> > > > > > >, os<1>) { return gen(); }
+  template<int x, int z, int p> Ls<1,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > operator- (Ls<1,os<2,hs<x,os<1,Lvvs<z,os<1,hs<p> > > > > > >, hs<x-p-1,os<1> >) { return gen(); }
+  template<int x, int z> Ls<1,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > operator- (Ls<1,os<2,hs<x,os<1,Lvvs<z,os<1> > > > > >, hs<x-1,os<1> >) { return gen(); }
+  template<int n, int x, int z> Ls<1,vLs<n,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > > operator- (Ls<1,vLs<n,os<2,hs<x,os<1,Lvvs<z,os<1,hs<x-1> > > > > > > >, os<1>) { return gen(); }
+  template<int n, int x, int z, int p> Ls<1,vLs<n,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > > operator- (Ls<1,vLs<n,os<2,hs<x,os<1,Lvvs<z,os<1,hs<p> > > > > > > >, hs<x-p-1,os<1> >) { return gen(); }
+  template<int n, int x, int z> Ls<1,vLs<n,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > > operator- (Ls<1,vLs<n,os<2,hs<x,os<1,Lvvs<z,os<1> > > > > > >, hs<x-1,os<1> >) { return gen(); }
+
 
 // Constructing a cuboid with H == D: o---o|&!&|&*o---o&!!&!!&!!o---o
   cuboid<0,0,0> operator* (os<2,rectangle<0,0> >) { return gen(); }
   template<int x> cuboid<x,0,0> operator* (hs<x,os<2,rectangle<x,0> > >) { return gen(); }
-  template<int z> cuboid<0,z,z> operator* (vLs<z,os<3,Lvvs<z,hline<0> > > >) { return gen(); }
+  template<int z> cuboid<0,z,z> operator* (os<1,vLs<z,os<3,Lvvs<z,hline<0> > > > >) { return gen(); }
   template<int x, int z> cuboid<x,z,z> operator* (hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > > >) { return gen(); }
 
   cuboid<1,0,0> operator- (os<1>, os<2,rectangle<1,0> >) { return gen(); }
   template<int z> cuboid<1,z,z> operator- (os<1>, os<1,vLs<z,os<2,hs<1,os<1,Lvvs<z,hline<1> > > > > > >) { return gen(); }
-  template<int q> cuboid<q+1,0,0> operator- (os<1>, hs<q,os<3,hs<q+1,os<1,hline<q+1> > > > >) { return gen(); }
-  template<int q, int z> cuboid<q+1,z,z> operator- (os<1>, hs<q,os<1,vLs<z,os<2,hs<q+1,os<1,Lvvs<z,hline<q+1> > > > > > > >) { return gen(); }
-  template<int p, int q> cuboid<p+q+1,0,0> operator- (os<1,hs<p> >, hs<q,os<3,hs<p+q+1,hline<p+q+1> > > >) { return gen(); }
-  template<int p, int q, int z> cuboid<p+q+1,z,z> operator- (os<1,hs<p> >, hs<q,os<1,vLs<z,os<2,hs<p+q+1,os<1,Lvvs<z,hline<p+q+1> > > > > > > >) { return gen(); }
-  template<int p> cuboid<p+1,0,0> operator- (os<1,hs<p> >, os<3,hs<p+1,hline<p+1> > >) { return gen(); }
+  template<int x> cuboid<x,0,0> operator- (os<1>, hs<x-1,os<2,rectangle<x,0> > >) { return gen(); }
+  template<int x, int z> cuboid<x,z,z> operator- (os<1>, hs<x-1,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > > >) { return gen(); }
+  template<int x, int p> cuboid<x,0,0> operator- (os<1,hs<p> >, hs<x-p-1,os<2,rectangle<x,0> > >) { return gen(); }
+  template<int x, int p, int z> cuboid<x,z,z> operator- (os<1,hs<p> >, hs<x-p-1,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > > >) { return gen(); }
+  template<int x> cuboid<x,0,0> operator- (os<1,hs<x-1> >, os<2,rectangle<x,0> >) { return gen(); }
   template<int p, int z> cuboid<p+1,z,z> operator- (os<1,hs<p> >, os<1,vLs<z,os<2,hs<p+1,os<1,Lvvs<z,hline<p+1> > > > > > >) { return gen(); }
 
   // Rear-top-right corner
   cuboid<0,0,0> operator* (os<1>, os<1,rectangle<0,0> >) { return gen(); }
   template<int z> cuboid<0,z,z> operator* (os<1>, vLs<z,os<3,Lvvs<z,hline<0> > > >) { return gen(); }
-  template<int x> cuboid<x,0,0> operator* (os<1,hs<x> >, os<2,hs<x,os<1,hline<x> > > >) { return gen(); }
+  template<int x> cuboid<x,0,0> operator* (os<1,hs<x> >, os<1,rectangle<x,0> >) { return gen(); }
   template<int x, int z> cuboid<x,z,z> operator* (os<1,hs<x> >, vLs<z,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > >) { return gen(); }
 
+  cuboid<0,1,1> operator| (hline<0>, Ls<1,os<3,Lvvs<1,hline<0> > > >) { return gen(); }
+  template<int x> cuboid<x,1,1> operator| (hline<x>, Ls<1,os<2,hs<x,os<1,Lvvs<1,hline<x> > > > > >) { return gen(); }
   template<int z> cuboid<0,z,z> operator| (hline<0>, Ls<1,vLs<z-1,os<3,Lvvs<z,hline<0> > > > >) { return gen(); }
   template<int x, int z> cuboid<x,z,z> operator| (hline<x>, Ls<1,vLs<z-1,os<2,hs<x,os<1,Lvvs<z,hline<x> > > > > > >) { return gen(); }
   template<int z, int p> cuboid<0,z,z> operator| (os<2,vLs<p> >, Ls<1,vLs<z-p-1,os<3,Lvvs<z,hline<0> > > > >) { return gen(); }
@@ -221,19 +428,19 @@ namespace analog_literals {
   // Rear-bottom-left corner
   cuboid<0,0,0> operator* (hline<0>, rectangle<0,0>) { return gen(); }
   template<int z> cuboid<0,z,z> operator* (os<2,vLs<z> >, os<2,Lvvs<z,hline<0> > >) { return gen(); }
-  template<int x> cuboid<x,0,0> operator* (os<1,hs<x,os<1> > >, os<1,hs<x,os<1,hline<x> > > >) { return gen(); }
+  template<int x> cuboid<x,0,0> operator* (hline<x>, rectangle<x,0>) { return gen(); }
   template<int x, int z> cuboid<x,z,z> operator* (os<1,hs<x,os<1,vLs<z> > > >, os<1,hs<x,os<1,Lvvs<z,hline<x> > > > >) { return gen(); }
 
   // Near-top-left corner
   cuboid<0,0,0> operator* (os<1,hline<0> >, os<1,hline<0> >) { return gen(); }
   template<int z> cuboid<0,z,z> operator* (os<2,vLs<z,os<1> > >, os<1,Lvvs<z,hline<0> > >) { return gen(); }
-  template<int x> cuboid<x,0,0> operator* (os<1,hs<x,os<2> > >, hs<x,os<1,hline<x> > >) { return gen(); }
+  template<int x> cuboid<x,0,0> operator* (os<1,hs<x,hline<0> > >, hs<x,os<1,hline<x> > >) { return gen(); }
   template<int x, int z> cuboid<x,z,z> operator* (os<1,hs<x,os<1,vLs<z,os<1> > > > >, hs<x,os<1,Lvvs<z,hline<x> > > >) { return gen(); }
 
-  cuboid<1,0,0> operator- (os<1,hs<1,os<2> > >, os<1,hline<1> >) { return gen(); }
-  template<int z> cuboid<1,z,z> operator- (os<1,hs<1,os<1,vLs<z,os<2> > > > >, os<1,Lvvs<z,hline<1> > >) { return gen(); }
-  template<int x> cuboid<x,0,0> operator- (os<1,hs<x,os<3> > >, hs<x-1,os<1,hline<x> > >) { return gen(); }
-  template<int x, int z> cuboid<x,z,z> operator- (os<1,hs<x,os<1,vLs<z,os<2> > > > >, hs<x-1,os<1,Lvvs<z,hline<x> > > >) { return gen(); }
+  cuboid<1,0,0> operator- (os<1,hs<1,os<1,hline<0> > > >, os<1,hline<1> >) { return gen(); }
+  template<int z> cuboid<1,z,z> operator- (os<1,hs<1,os<1,vLs<z,hline<0> > > > >, os<1,Lvvs<z,hline<1> > >) { return gen(); }
+  template<int x> cuboid<x,0,0> operator- (os<1,hs<x,os<1,hline<0> > > >, hs<x-1,os<1,hline<x> > >) { return gen(); }
+  template<int x, int z> cuboid<x,z,z> operator- (os<1,hs<x,os<1,vLs<z,hline<0> > > > >, hs<x-1,os<1,Lvvs<z,hline<x> > > >) { return gen(); }
   template<int x, int p> cuboid<x,0,0> operator- (os<1,hs<x,os<3,hs<p> > > >, hs<x-p-1,os<1,hline<x> > >) { return gen(); }
   template<int x, int z, int p> cuboid<x,z,z> operator- (os<1,hs<x,os<1,vLs<z,os<2,hs<p> > > > > >, hs<x-p-1,os<1,Lvvs<z,hline<x> > > >) { return gen(); }
   template<int x> cuboid<x,0,0> operator- (os<1,hs<x,os<3,hs<x-1> > > >, os<1,hline<x> >) { return gen(); }
@@ -245,13 +452,17 @@ namespace analog_literals {
   template<int x> cuboid<x,0,0> operator* (os<1,hs<x,os<3,hs<x> > > >, hline<x>) { return gen(); }
   template<int x, int z> cuboid<x,z,z> operator* (os<1,hs<x,os<1,vLs<z,os<2,hs<x> > > > > >, Lvvs<z,hline<x> >) { return gen(); }
 
-  template<int z> cuboid<0,z,z> operator& (os<2,vLs<z,hline<0> > >, vs<2,Lvvs<z-1,hline<0> > >) { return gen(); }
-  template<int x, int z> cuboid<x,z,z> operator& (os<1,hs<x,os<1,vLs<z,hline<x> > > > >, vs<2,Lvvs<z-1,hline<x> > >) { return gen(); }
+  cuboid<0,1,1> operator& (os<2,vLs<1,os<1,hline<0> > > >, vs<2,hline<0> >) { return gen(); }
+  template<int x> cuboid<x,1,1> operator& (os<1,hs<x,os<1,vLs<1,os<1,hline<x> > > > > >, vs<2,hline<x> >) { return gen(); }
+  template<int z> cuboid<0,z,z> operator& (os<2,vLs<z,os<1,hline<0> > > >, vs<2,Lvvs<z-1,hline<0> > >) { return gen(); }
+  template<int x, int z> cuboid<x,z,z> operator& (os<1,hs<x,os<1,vLs<z,os<1,hline<x> > > > > >, vs<2,Lvvs<z-1,hline<x> > >) { return gen(); }
   template<int z, int p> cuboid<0,z,z> operator& (os<2,vLs<z,os<3,Lvvs<p> > > >, vs<2,Lvvs<z-p-1,hline<0> > >) { return gen(); }
   template<int x, int z, int p> cuboid<x,z,z> operator& (os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<p> > > > > > > >, vs<2,Lvvs<z-p-1,hline<x> > >) { return gen(); }
   template<int z> cuboid<0,z,z> operator& (os<2,vLs<z,os<3,Lvvs<z-1> > > >, vs<2,hline<0> >) { return gen(); }
   template<int x, int z> cuboid<x,z,z> operator& (os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<z-1> > > > > > > >, vs<2,hline<x> >) { return gen(); }
 
+  cuboid<0,1,1> operator| (os<2,vLs<1,os<3,Ls<1> > > >, vs<1,hline<0> >) { return gen(); }
+  template<int x> cuboid<x,1,1> operator| (os<1,hs<x,os<1,vLs<1,os<2,hs<x,os<1,Ls<1> > > > > > > >, vs<1,hline<x> >) { return gen(); }
   template<int z> cuboid<0,z,z> operator| (os<2,vLs<z,os<3,Ls<1> > > >, vs<1,Lvvs<z-1,hline<0> > >) { return gen(); }
   template<int x, int z> cuboid<x,z,z> operator| (os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Ls<1> > > > > > > >, vs<1,Lvvs<z-1,hline<x> > >) { return gen(); }
   template<int z, int p> cuboid<0,z,z> operator| (os<2,vLs<z,os<3,Lvvs<p,Ls<1> > > > >, vs<1,Lvvs<z-p-1,hline<0> > >) { return gen(); }
@@ -259,10 +470,15 @@ namespace analog_literals {
   template<int z> cuboid<0,z,z> operator| (os<2,vLs<z,os<3,Lvvs<z-1,Ls<1> > > > >, vs<1,hline<0> >) { return gen(); }
   template<int x, int z> cuboid<x,z,z> operator| (os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<z-1,Ls<1> > > > > > > > >, vs<1,hline<x> >) { return gen(); }
 
-  // Near-lower-left corner
+  cuboid<0,1,1> operator|| (os<2,vLs<1,os<3,Ls<1> > > >, hline<0>) { return gen(); }
+  template<int z> cuboid<0,z,z> operator|| (os<2,vLs<z,os<3,Ls<1> > > >, Lvvs<z-1,hline<0> >) { return gen(); }
+  template<int z, int p> cuboid<0,z,z> operator|| (os<2,vLs<z,os<3,Lvvs<p,Ls<1> > > > >, Lvvs<z-p-1,hline<0> >) { return gen(); }
+  template<int z> cuboid<0,z,z> operator|| (os<2,vLs<z,os<3,Lvvs<z-1,Ls<1> > > > >, hline<0>) { return gen(); }
+
+  // Near-bottom-left corner
   cuboid<0,0,0> operator* (os<1,rectangle<0,0> >, os<1>) { return gen(); }
   template<int z> cuboid<0,z,z> operator* (os<2,vLs<z,os<3,Lvvs<z> > > >, os<1>) { return gen(); }
-  template<int x> cuboid<x,0,0> operator* (os<1,hs<x,os<3,hs<x,os<1> > > > >, hs<x,os<1> >) { return gen(); }
+  template<int x> cuboid<x,0,0> operator* (os<1,hs<x,os<2,hline<x> > > >, hs<x,os<1> >) { return gen(); }
   template<int x, int z> cuboid<x,z,z> operator* (os<1,hs<x,os<1,vLs<z,os<2,hs<x,os<1,Lvvs<z> > > > > > > >, hs<x,os<1> >) { return gen(); }
 
   cuboid<1,0,0> operator- (os<1,hs<1,os<3,hs<1,hline<0> > > > >, os<1>) { return gen(); }
