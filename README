@@ -11,11 +11,12 @@ http://nullroute.eu.org/mirrors/analogliterals/analogliterals.xhtml
 Improvement to 1-D literals by Brian Dickens:
 http://hostilefork.com/2009/08/29/tweakinganalog-literals-humor/
 
-I'm working on a rewrite with the following goals:
+"analog-punct.hpp" is a rewrite from scratch with the following goals:
   - represent line<3> as o---o, not o-------o
   - otherwise match Eelis's excellent style and exported API
   - allow both "*" and "o" for corners/endpoints, as far as possible
   - allow both "-" and "~" for horizontals, as far as possible
   - allow both "!" and "|" for verticals, as far as possible
+  - allow both "L" and "&" for diagonals (as is sometimes required)
   - allow cuboids of all dimensions, such as cuboid<1,2,1>
   - end-to-end-test all features

@@ -5,7 +5,7 @@
 #include <time.h>
 #include <string>
 
-#if 0
+#if 1
  #define SQUASH_SPACES(s) squash_spaces(s)
 #else
  #define SQUASH_SPACES(s) s
@@ -129,15 +129,21 @@ bool is_valid_expression(std::string s)
     return (*p == '\0');
 }
 
+static char back(const std::string &s)
+{
+    return *s.rbegin();
+}
+
 std::string squash_spaces(const std::string &st)
 {
     std::string result = "";
     const char *s = st.c_str();
     for (int i=0; s[i] != '\0'; ++i) {
         if (isspace(s[i])) {
-            if (!result.empty() && *result.rbegin() == '-' && s[i+1] == '-') result += " ";
-            if (!result.empty() && *result.rbegin() == '&' && s[i+1] == '&') result += " ";
-            if (!result.empty() && *result.rbegin() == '|' && s[i+1] == '|') result += " ";
+            if (!result.empty() && back(result) == '-' && s[i+1] == '-') result += " ";
+            if (!result.empty() && back(result) == '&' && s[i+1] == '&') result += " ";
+            if (!result.empty() && back(result) == '|' && s[i+1] == '|') result += " ";
+            if (!result.empty() && isalpha(back(result)) && isalpha(s[i+1])) result += " ";
         } else {
             result += s[i];
         }
@@ -158,7 +164,7 @@ std::string random_line(bool horizontal, int x)
     s += R("*o");
     for (int i=0; i < x; ++i) {
         if (horizontal) {
-            s += R("-~");
+            s += (back(s)=='o') ? '-' : R("~-");
         } else {
             s += (i==0 && (s[0] == 'o')) ? "|" : "!";
             s += " ";
@@ -176,7 +182,7 @@ std::string random_rectangle(int x, int y)
 
     std::string s = "\n    ";
     s += R("*o");
-    for (int i=0; i < x; ++i) s += R("~-");
+    for (int i=0; i < x; ++i) s += (back(s)=='o') ? '-' : R("~-");
     s += R("*o"); s += "\n    ";
     for (int j=0; j < y; ++j) {
         s += R("!|");
@@ -184,8 +190,8 @@ std::string random_rectangle(int x, int y)
         s += R("!|"); s += "\n    ";
     }
     s += R("*o");
-    for (int i=0; i < x; ++i) s += R("~-");
-    s += R("*o");
+    for (int i=0; i < x; ++i) s += (back(s)=='o') ? '-' : R("~-");
+    s += "o";
 
     return SQUASH_SPACES(s);
 }
@@ -198,7 +204,7 @@ std::string random_cuboid(int x, int y, int z)
 
     std::string s = "\n    ";
     s += R("*o");
-    for (int i=0; i < x; ++i) s += R("~-");
+    for (int i=0; i < x; ++i) s += (back(s)=='o') ? '-' : R("~-");
     s += R("*o"); s += "\n    ";
 
     for (int j=0; j < y+z+1; ++j) {
@@ -224,13 +230,13 @@ std::string random_cuboid(int x, int y, int z)
         } else if (j == z) {
             for (int i = edge; i < z; ++i) s += " ";
             s += R("*o");
-            for (int i=0; i < x; ++i) s += R("~-");
+            for (int i=0; i < x; ++i) s += (back(s)=='o') ? '-' : R("~-");
             s += R("*o");
         } else {
             for (int i=edge; i < z; ++i) s += " ";
             s += ((j >= y) ? R("!|") : '!');
             for (int i=0; i < x; ++i) s += " ";
-            s += ((x==0) ? R("!|") : '!');
+            s += ((x==0 && back(s)!='!') ? R("!|") : '!');
         }
         s += "\n    ";
     }
@@ -238,8 +244,8 @@ std::string random_cuboid(int x, int y, int z)
     // Draw the bottom, closest edge of the cube.
     for (int i=0; i < z+1; ++i) s += " ";
     s += R("*o");
-    for (int i=0; i < x; ++i) s += R("~-");
-    s += R("*o");
+    for (int i=0; i < x; ++i) s += (back(s)=='o') ? '-' : R("~-");
+    s += "o";
 
     return SQUASH_SPACES(s);
 }
@@ -299,10 +305,10 @@ void print_cuboid_test(int x, int y, int z)
     const char *r = cube_string.c_str();
     printf("{\n");
     printf("    cuboid<%d,%d,%d> r = %s;\n", x, y, z, r);
-    printf("    assert((%s).width == %d);\n", r, x);
-    printf("    assert((%s).height == %d);\n", r, y);
-    printf("    assert((%s).depth == %d);\n", r, z);
-    printf("    assert((%s).volume == %d);\n", r, x*y*z);
+//    printf("    assert((%s).width == %d);\n", r, x);
+//    printf("    assert((%s).height == %d);\n", r, y);
+//    printf("    assert((%s).depth == %d);\n", r, z);
+//    printf("    assert((%s).volume == %d);\n", r, x*y*z);
     printf("}\n");
 }
 
@@ -318,27 +324,30 @@ int main()
     puts("    using namespace analog_literals::symbols;");
     puts("    using namespace analog_literals::shapes;");
     puts("");
-    for (int i=0; i < 10; ++i) {
-        print_line_test(/*horizontal=*/true, rand() % 10);
-    }
-    for (int i=0; i < 10; ++i) {
-        print_line_test(/*horizontal=*/false, rand() % 10);
-    }
-    for (int i=0; i < 100; ++i) {
-        print_rectangle_test(rand() % 8, 0);
-    }
-    for (int i=0; i < 100; ++i) {
-        print_rectangle_test(rand() % 8, 1);
-    }
-    for (int i=0; i < 100; ++i) {
-        print_rectangle_test(0, rand() % 8);
-    }
-    for (int i=0; i < 100; ++i) {
-        print_rectangle_test(1, rand() % 8);
+    puts("#include \"regressions.h\"");
+    puts("");
+    for (int i=0; i < 0; ++i) {
+        print_line_test(/*horizontal=*/true, i % 7);
     }
     for (int i=0; i < 0; ++i) {
-        int d = 1 + (rand() % 4);
-        print_cuboid_test(rand() % 8, d+(1 + rand() % 3), d);
+        print_line_test(/*horizontal=*/false, i % 7);
+    }
+    for (int i=0; i < 0; ++i) {
+        print_rectangle_test(0, rand() % 5);
+        print_rectangle_test(1, rand() % 5);
+        print_rectangle_test(2, rand() % 5);
+        print_rectangle_test(rand() % 6, 0);
+        print_rectangle_test(rand() % 6, 1);
+        print_rectangle_test(rand() % 6, rand() % 5);
+    }
+    for (int i=0; i < 60; ++i) {
+        for (int x=0; x <= 5; ++x) {
+          for (int y=0; y <= 5; ++y) {
+            for (int z=0; z <= 5; ++z) {
+                print_cuboid_test(x,y,z);
+            }
+          }
+        }
     }
     puts("    return 0;");
     puts("}");
