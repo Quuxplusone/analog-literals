@@ -527,6 +527,8 @@ namespace analog_literals {
   template<int z, int q> os<2,vLs<z,vs<1,os<1,vline<q+1> > > > > operator| (os<2,vLs<z,vs<1,hline<0> > > >, vs<q,os<1> >) { return gen(); }
   template<int z, int q, typename T> os<2,vLs<z,vs<1,os<2,vs<q+1,T> > > > > operator| (os<2,vLs<z,vs<1,hline<0> > > >, vs<q,T>) { return gen(); }
 
+  template<int q> os<2,vs<1,os<1,vline<q+2> > > > operator|| (os<2,vs<1,hline<0> > >, vs<q,os<1> >) { return gen(); }
+
   // Rear-bottom-left corner
   template<int n> hs<n,os<1,vline<2> > > operator* (hs<n,os<1> >, vs<2,os<1> >) { return gen(); }
   template<int x> os<1,hs<x,os<1,vline<2> > > > operator* (hline<x>, vs<2,os<1> >) { return gen(); }
@@ -555,7 +557,7 @@ namespace analog_literals {
   template<int x, int z, typename T> os<1,hs<x,os<1,vLs<z,vs<1,os<1,hs<x,os<2,vs<2,Ls<1,T> > > > > > > > > > operator| (os<1,hs<x,os<1,vLs<z,vs<1,os<1,hs<x,hline<0> > > > > > > >, vLs<1,T>) { return gen(); }
   template<int z, int h, typename T> os<2,vLs<z,vs<1,os<2,vs<h,os<1,vs<2,Ls<1,T> > > > > > > > operator| (os<2,vLs<z,vs<1,os<1,vline<h> > > > >, vLs<1,T>) { return gen(); }
   template<int x, int z, int h, typename T> os<1,hs<x,os<1,vLs<z,vs<1,os<1,hs<x,os<1,vs<h,os<1,vs<2,Ls<1,T> > > > > > > > > > > > operator| (os<1,hs<x,os<1,vLs<z,vs<1,os<1,hs<x,vline<h> > > > > > > >, vLs<1,T>) { return gen(); }
-
+  template<int n, typename T> vs<n,os<1,vs<2,T> > > operator| (vs<n,os<1> >, vs<1,T>) { return gen(); }
   template<int z, typename T> os<2,vLs<z,vs<1,os<3,vs<2,T> > > > > operator|| (os<2,vLs<z,vs<1,os<1,hline<0> > > > >, T) { return gen(); }
   template<int z, int h, typename T> os<2,vLs<z,vs<1,os<2,vs<h,os<1,vs<2,T> > > > > > > operator|| (os<2,vLs<z,vs<1,os<1,vline<h> > > > >, T) { return gen(); }
 
@@ -728,6 +730,9 @@ namespace analog_literals {
   template<int x, int h> cuboid<x,h/3+2,0> operator| (os<1,hs<x,os<1,vs<1,hline<x> > > > >, vs<h,os<1,vs<2,hline<x> > > >) { return gen(); }
   template<int z, int h> cuboid<0,z+h/3+2,z> operator| (os<2,vLs<z,vs<1,hline<0> > > >, vs<h,os<1,vs<2,Lvvs<z,hline<0> > > > >) { return gen(); }
   template<int x, int z, int h> cuboid<x,z+h/3+2,z> operator| (os<1,hs<x,os<1,vLs<z,vs<1,hline<x> > > > > >, vs<h,os<1,vs<2,Lvvs<z,hline<x> > > > >) { return gen(); }
+
+  template<int h> cuboid<0,h/3+2,0> operator|| (os<2,vs<1,hline<0> > >, vs<h,os<1,vs<2,hline<0> > > >) { return gen(); }
+  template<int x, int h> cuboid<x,h/3+2,0> operator|| (os<1,hs<x,os<1,vs<1,hline<x> > > > >, vs<h,os<1,vs<2,hline<x> > > >) { return gen(); }
 
   // Rear-bottom-left corner
   cuboid<0,1,0> operator* (os<2,vs<1,hline<0> > >, vs<2,hline<0> >) { return gen(); }

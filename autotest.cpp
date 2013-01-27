@@ -233,8 +233,10 @@ std::string random_cuboid(int x, int y, int z)
             for (int i=0; i < x; ++i) s += (back(s)=='o') ? '-' : R("~-");
             s += R("*o");
         } else {
+            bool bang_not_allowed = (back(s)=='o');
+            bool or_not_allowed = (back(s)=='!') || (back(s)=='*') || (back(s)=='|' && edge < z);
             for (int i=edge; i < z; ++i) s += " ";
-            s += ((j >= y) ? R("!|") : '!');
+            s += bang_not_allowed ? '|' : or_not_allowed ? '!' : R("!|");
             for (int i=0; i < x; ++i) s += " ";
             s += ((x==0 && back(s)!='!') ? R("!|") : '!');
         }
@@ -340,7 +342,7 @@ int main()
         print_rectangle_test(rand() % 6, 1);
         print_rectangle_test(rand() % 6, rand() % 5);
     }
-    for (int i=0; i < 60; ++i) {
+    for (int i=0; i < 20; ++i) {
         for (int x=0; x <= 5; ++x) {
           for (int y=0; y <= 5; ++y) {
             for (int z=0; z <= 5; ++z) {

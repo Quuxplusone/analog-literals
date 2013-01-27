@@ -43,7 +43,7 @@ if ($trust and open (FILE, '<', 'regressions.h')) {
 open(REGRESSIONS, '>', 'auto-regressions.h') or die "open auto-regressions.h failed";
 print REGRESSIONS "\n";
 
-for my $i (72 .. 1088, 1095 .. 1102) {
+for my $i (72 .. 1093, 1100 .. 1107) {
     print "Line $i: ";
     if ($blank_lines{$i}) {
         print "blank\n";
